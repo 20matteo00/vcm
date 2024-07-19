@@ -46,7 +46,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $p = (count($sec) - $giornate);
     }
     $stmt->close();
-    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod, $ar, $tablepartite, $conn, $user, $name);
+    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod, $ar, $tablepartite, $conn, $user, $name, $par);
 
     $readonly = "";
     if ($finita == 1) {
@@ -208,7 +208,31 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     }
 
                 }
-
+                $sql = "SELECT * FROM $tablepartite WHERE utente=? AND nome=? AND giornata=11";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ss", $user, $name);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
+                $stmt->close();
+                if (isset($row['giornata'])) {
+                    echo "<div class='col-6 text-center p-3'>";
+                    echo "<div class='card shadow-sm miacard'>";
+                    echo "<div class='card-header partecipants miacardbody'>";
+                    echo "Vincitore";
+                    echo "</div>";
+                    echo "<div class='card-body miacardbody'>";
+                    if ($row["gol1"] > $row["gol2"]) {
+                        echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra1"] . "</span>";
+                    } elseif (($row["gol1"] < $row["gol2"])) {
+                        echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra2"] . "</span>";
+                    } else {
+                        echo "";
+                    }
+                    echo "</div>";
+                    echo "</div>";
+                    echo "</div>";
+                }
 
             }
             ?>
@@ -245,11 +269,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } elseif (isset($_POST['delete'])) {
         // Delete logic
-        $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata = ?";
-        $stmt_delete = $conn->prepare($sql_delete);
-        $stmt_delete->bind_param("ssi", $user, $name, $round);
-        $stmt_delete->execute();
-        $stmt_delete->close();
+        if ($mod == "eliminazione") {
+            $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata = ?";
+            $stmt_delete = $conn->prepare($sql_delete);
+            $stmt_delete->bind_param("ssi", $user, $name, $round);
+            $stmt_delete->execute();
+            $stmt_delete->close();
+        }
+        if ($mod == "eliminazione") {
+            $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata >= ?";
+            $stmt_delete = $conn->prepare($sql_delete);
+            $stmt_delete->bind_param("ssi", $user, $name, $round);
+            $stmt_delete->execute();
+            $stmt_delete->close();
+        }
+
 
 
     }
@@ -262,7 +296,7 @@ function logBase2($n)
     return log($n) / log(2);
 }
 
-function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite, $conn, $user, $name)
+function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite, $conn, $user, $name, $par)
 {
     // Check if the number of teams is even
     if ($numberOfTeams % 2 != 0) {
@@ -298,7 +332,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
         if ($ar == 1) {
             $rounds = $rounds * 2 - 1;
         }
-
+        $pari = false;
         // Fetch match data from the database
         $sql = "SELECT * FROM {$tablepartite} WHERE utente = ? AND nome = ?";
         $stmt = $conn->prepare($sql);
@@ -336,40 +370,37 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $round++;
             }
 
-            // Calculate the number of matches to consider
-            $count = ($ar == 1) ? count($squadra1) * 2 : count($squadra1);
             $winners = [];
 
-            for ($i = 0; $i < count($squadra1); $i++) {
-                $currentteam = $squadra1[$i];
-                $golcurrent = 0;
-                $golopponent = 0;
-                $opponentteam = null;
-
-                for ($j = 0; $j < $count; $j++) {
-                    if ($currentteam == $squadra1[$j]) {
-                        $golcurrent += $gol1[$j];
-                        $golopponent += $gol2[$j];
-                        $opponentteam = $squadra2[$j];
-                    } elseif ($currentteam == $squadra2[$j]) {
-                        $golcurrent += $gol2[$j];
-                        $golopponent += $gol1[$j];
-                        $opponentteam = $squadra1[$j];
+            foreach ($schedule[$round] as $match) {
+                list($home, $away) = $match;
+                $golHome = 0;
+                $golAway = 0;
+                for ($i = 0; $i < count($squadra1); $i++) {
+                    if ($squadra1[$i] == $home && $squadra2[$i] == $away) {
+                        $golHome += $gol1[$i];
+                        $golAway += $gol2[$i];
+                    } elseif ($squadra1[$i] == $away && $squadra2[$i] == $home) {
+                        $golHome += $gol2[$i];
+                        $golAway += $gol1[$i];
                     }
                 }
 
-                if ($golcurrent >= $golopponent) {
-                    if (!in_array($currentteam, $winners)) {
-                        $winners[] = $currentteam;
-                    }
+                if ($golHome > $golAway) {
+                    $winners[] = $home;
+                } elseif ($golHome < $golAway) {
+                    $winners[] = $away;
                 } else {
-                    if (!in_array($opponentteam, $winners)) {
-                        $winners[] = $opponentteam;
-                    }
+                    $pari = true;
                 }
             }
-
-            // Update the array of teams with the winners
+            var_dump($par); 
+            if ($pari || !in_array($par, $giornata)) {
+                
+                
+                $winners = [];
+                break; // Exit the loop if there's a tie
+            }
             $squadre = $winners;
 
             // If there's only one team left, end the loop
@@ -378,12 +409,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             }
         }
 
-        // Print the final winner if there's only one team left
-        if (count($squadre) == 1) {
-            echo "The final winner is: " . $squadre[0];
-        } else {
-            echo "Error: The competition does not have a single winner.";
-        }
+
     }
 
     return $schedule;
