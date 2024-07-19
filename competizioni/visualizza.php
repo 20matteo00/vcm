@@ -43,11 +43,12 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             $par = (count($sec) - $giornate);
             $j = $par * 2;
         }
-        $p =  (count($sec) - $giornate);
+        $p = (count($sec) - $giornate);
     }
     $stmt->close();
+    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod, $ar, $tablepartite, $conn, $user, $name);
+
     $readonly = "";
-    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod);
     if ($finita == 1) {
         $readonly = "readonly";
     }
@@ -134,7 +135,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     }
                 }
             } elseif ($mod == "eliminazione") {
-                /* $round = 0;
+                $round = 0;
 
                 for ($i = $par; $i < count($sec); $i++) {
                     echo "<div class='col-6 text-center p-3'>";
@@ -144,8 +145,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo $sec[$i];
                     echo "</div>";
                     echo "<div class='card-body miacardbody'>";
-                    if (isset($scheduler[$i])) {
-                        foreach ($scheduler[$i] as $match) {
+                    if (isset($scheduler[$round])) {
+                        foreach ($scheduler[$round] as $match) {
                             $query1 = "SELECT * FROM squadre WHERE utente = ? AND nome = ?";
                             $stmt1 = $conn->prepare($query1);
                             $stmt1->bind_param("ss", $user, $match[0]);
@@ -175,7 +176,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                             echo "<input type ='hidden' name='round' value='" . ($j + 1) . "'>";
                             echo "<input type='hidden' name='sec' value='" . $sec[$i] . "'>";
-                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$i])) . "'>";
+                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
@@ -202,11 +203,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     $round++;
                     $j++;
                     if ($ar == 0) {
-                        $round++;
+                        /* $round++; */
                         $j++;
                     }
 
-                } */
+                }
 
 
             }
@@ -261,7 +262,7 @@ function logBase2($n)
     return log($n) / log(2);
 }
 
-function creagiornate($teams, $numberOfTeams, $rounds, $mod)
+function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite, $conn, $user, $name)
 {
     // Check if the number of teams is even
     if ($numberOfTeams % 2 != 0) {
@@ -286,8 +287,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod)
                 $schedule[$round][$match] = [$teams[$home], $teams[$away]];
             }
         }
-        // Randomize the order of the rounds
-        /* shuffle($schedule); */
         // Generate the second round (return matches)
         for ($round = $numberOfTeams - 1; $round < $rounds; $round++) {
             $schedule[$round] = [];
@@ -296,33 +295,99 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod)
             }
         }
     } elseif ($mod == "eliminazione") {
-        /* var_dump($dim-$p);
-        for ($round = ($dim-$p); $round < $dim; $round ++) {
-            $schedule[$par] = [];
-            for ($match = 0; $match < $numberOfTeams / 2; $match++) {
-                $home = ($match) % ($numberOfTeams - 1);
-                $away = ($numberOfTeams - 1 - $match) % ($numberOfTeams - 1);
-                // Last team is fixed
-                if ($match == 0) {
-                    $away = $numberOfTeams - 1;
-                }
-                $schedule[$par][$match] = [$teams[$home], $teams[$away]];
+        if ($ar == 1) {
+            $rounds = $rounds * 2 - 1;
+        }
+
+        // Fetch match data from the database
+        $sql = "SELECT * FROM {$tablepartite} WHERE utente = ? AND nome = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $user, $name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $squadra1 = [];
+        $squadra2 = [];
+        $gol1 = [];
+        $gol2 = [];
+        $giornata = [];
+        while ($row = $result->fetch_assoc()) {
+            $squadra1[] = $row['squadra1'];
+            $squadra2[] = $row['squadra2'];
+            $gol1[] = $row['gol1'];
+            $gol2[] = $row['gol2'];
+            $giornata[] = $row['giornata'];
+        }
+
+        $squadre = $teams;
+
+        // Iterate through rounds
+        for ($round = 0; $round < $rounds; $round++) {
+            $schedule[$round] = [];
+            for ($match = 0; $match < count($squadre) / 2; $match++) {
+                $home = $squadre[$match];
+                $away = $squadre[count($squadre) - 1 - $match];
+                $schedule[$round][$match] = [$home, $away];
             }
             if ($ar == 1) {
-                $schedule[$par + 1] = [];
-                foreach ($schedule[$par] as $match) {
-                    $schedule[$par + 1][] = array_reverse($match);
+                $schedule[$round + 1] = [];
+                foreach ($schedule[$round] as $match) {
+                    $schedule[$round + 1][] = array_reverse($match);
+                }
+                $round++;
+            }
+
+            // Calculate the number of matches to consider
+            $count = ($ar == 1) ? count($squadra1) * 2 : count($squadra1);
+            $winners = [];
+
+            for ($i = 0; $i < count($squadra1); $i++) {
+                $currentteam = $squadra1[$i];
+                $golcurrent = 0;
+                $golopponent = 0;
+                $opponentteam = null;
+
+                for ($j = 0; $j < $count; $j++) {
+                    if ($currentteam == $squadra1[$j]) {
+                        $golcurrent += $gol1[$j];
+                        $golopponent += $gol2[$j];
+                        $opponentteam = $squadra2[$j];
+                    } elseif ($currentteam == $squadra2[$j]) {
+                        $golcurrent += $gol2[$j];
+                        $golopponent += $gol1[$j];
+                        $opponentteam = $squadra1[$j];
+                    }
+                }
+
+                if ($golcurrent >= $golopponent) {
+                    if (!in_array($currentteam, $winners)) {
+                        $winners[] = $currentteam;
+                    }
+                } else {
+                    if (!in_array($opponentteam, $winners)) {
+                        $winners[] = $opponentteam;
+                    }
                 }
             }
-            $par+=2;
-        } */
 
+            // Update the array of teams with the winners
+            $squadre = $winners;
+
+            // If there's only one team left, end the loop
+            if (count($squadre) == 1) {
+                break;
+            }
+        }
+
+        // Print the final winner if there's only one team left
+        if (count($squadre) == 1) {
+            echo "The final winner is: " . $squadre[0];
+        } else {
+            echo "Error: The competition does not have a single winner.";
+        }
     }
-
 
     return $schedule;
 }
-
 
 
 
