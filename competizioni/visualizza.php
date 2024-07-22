@@ -215,7 +215,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                 $result = $stmt->get_result();
                 $row = $result->fetch_assoc();
                 $stmt->close();
-                if (isset($row['giornata'])) {
+                if (isset($row['giornata']) && ($row["gol1"] != $row["gol2"])) {
                     echo "<div class='col-6 text-center p-3'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
@@ -226,8 +226,6 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                         echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra1"] . "</span>";
                     } elseif (($row["gol1"] < $row["gol2"])) {
                         echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra2"] . "</span>";
-                    } else {
-                        echo "";
                     }
                     echo "</div>";
                     echo "</div>";
@@ -394,13 +392,12 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $pari = true;
                 }
             }
-            var_dump($par); 
-            if ($pari || !in_array($par, $giornata)) {
-                
+            if ($pari /* || !in_array($par, $giornata) */) {
                 
                 $winners = [];
                 break; // Exit the loop if there's a tie
             }
+
             $squadre = $winners;
 
             // If there's only one team left, end the loop

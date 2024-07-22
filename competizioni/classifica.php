@@ -7,20 +7,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $tablestatistiche = $_GET['tabstat'];
     if (isset($_GET['type']))
         $type = $_GET['type'];
-    if ($mod == "campionato") {
-        campionato($conn, $user, $name, $tablepartite, $tablestatistiche);
-    } elseif ($mod == "eliminazione") {
-        eliminazione();
-    } elseif ($mod == "champions") {
-        champions();
-    }
 
-}
-
-
-
-function campionato($conn, $user, $name, $tablepartite, $tablestatistiche)
-{
     // Ottieni tutte le partite per l'utente
     $sql = "SELECT * FROM " . $tablepartite . " WHERE utente=? AND nome=?";
     $stmt = $conn->prepare($sql);
@@ -118,6 +105,8 @@ function campionato($conn, $user, $name, $tablepartite, $tablestatistiche)
         $stmt_statistiche->execute();
         $stmt_statistiche->close();
     }
+
+
 }
 
 ?>
@@ -494,6 +483,7 @@ function campionato($conn, $user, $name, $tablepartite, $tablestatistiche)
             </div>
             <div class="card-footer ">
                 <?php include ("layout/menu_dettagli.php") ?>
+                <?php if($mod == "campionato") { ?>
                 <div class="d-block d-lg-flex justify-content-evenly">
                     <a href="index.php?page=classifica&type=general&name=<?php echo $name; ?>&mod=<?php echo $mod; ?>&tabpar=<?php echo $tablepartite; ?>&tabstat=<?php echo $tablestatistiche; ?>"
                         class="btn btn-info my-2">Classifica Generale</a>
@@ -508,6 +498,7 @@ function campionato($conn, $user, $name, $tablepartite, $tablestatistiche)
                     <a href="index.php?page=classifica&type=returnround&name=<?php echo $name; ?>&mod=<?php echo $mod; ?>&tabpar=<?php echo $tablepartite; ?>&tabstat=<?php echo $tablestatistiche; ?>"
                         class="btn btn-info my-2">Classifica Ritorno</a>
                 </div>
+                <?php } ?>
             </div>
         </div>
     </div>
