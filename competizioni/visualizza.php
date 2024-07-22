@@ -352,6 +352,10 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
 
         $squadre = $teams;
 
+        $g1 = $par + 1;
+        $g2 = $g1+1;
+        
+        
         // Iterate through rounds
         for ($round = 0; $round < $rounds; $round++) {
             $schedule[$round] = [];
@@ -392,12 +396,12 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $pari = true;
                 }
             }
-            if ($pari /* || !in_array($par, $giornata) */) {
-                
+            if ($pari  || !in_array($g1, $giornata) || !in_array($g2, $giornata)) {
                 $winners = [];
                 break; // Exit the loop if there's a tie
             }
-
+            $g1 += 2;
+            $g2 += 2;
             $squadre = $winners;
 
             // If there's only one team left, end the loop
