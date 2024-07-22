@@ -327,8 +327,10 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             }
         }
     } elseif ($mod == "eliminazione") {
+        $g1 = $par + 1;
         if ($ar == 1) {
             $rounds = $rounds * 2 - 1;
+            $g2 = $g1+1;
         }
         $pari = false;
         // Fetch match data from the database
@@ -352,8 +354,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
 
         $squadre = $teams;
 
-        $g1 = $par + 1;
-        $g2 = $g1+1;
         
         
         // Iterate through rounds
@@ -396,12 +396,20 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $pari = true;
                 }
             }
-            if ($pari  || !in_array($g1, $giornata) || !in_array($g2, $giornata)) {
-                $winners = [];
-                break; // Exit the loop if there's a tie
+            if($ar == 1) {
+                if ($pari  || !in_array($g1, $giornata) || !in_array($g2, $giornata)) {
+                    $winners = [];
+                    break; // Exit the loop if there's a tie
+                } 
+                $g1 += 2;
+                $g2 += 2;
+            } else {
+                if ($pari) {
+                    $winners = [];
+                    break; // Exit the loop if there's a tie
+                }
             }
-            $g1 += 2;
-            $g2 += 2;
+            
             $squadre = $winners;
 
             // If there's only one team left, end the loop

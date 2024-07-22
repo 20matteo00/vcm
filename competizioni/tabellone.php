@@ -5,17 +5,17 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $mod = $_GET['mod'];
     $tablepartite = $_GET['tabpar'];
     $tablestatistiche = $_GET['tabstat'];
-    if ($mod == "campionato") {
 
-        ?>
 
-        <div class="container my-5">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h1><?php echo $name ?></h1>
-                    </div>
-                    <div class="card-body">
+?>
+    <div class="container my-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h1><?php echo $name ?></h1>
+                </div>
+                <div class="card-body">
+                    <?php if ($mod == "campionato") { ?>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered text-center">
                                 <thead>
@@ -63,13 +63,20 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <?php include ("layout/menu_dettagli.php") ?>
+                    <?php } elseif ($mod == "eliminazione") { ?>
+
+                    <?php } elseif ($mod == "champions") { ?>
+
+                    <?php } ?>
+
+
                 </div>
+                <?php include("layout/menu_dettagli.php") ?>
             </div>
         </div>
+    </div>
 
-        <?php
+<?php
 
-    }
+
 }

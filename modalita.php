@@ -64,7 +64,7 @@ if (isset($_GET['mod'])) {
             echo "Nessuna squadra trovata.";
         }
 
-        echo '<button type="submit" name="select_players" class="btn btn-primary mt-3" disabled>Conferma Selezione</button>
+        echo '<button type="submit" name="select_players" class="btn btn-primary my-3" disabled>Conferma Selezione</button>
           </form>
           </div>';
 
@@ -90,7 +90,7 @@ if (isset($_GET['mod'])) {
                     <label for="' . $VCM_partecipants . '">' . $VCM_partecipants . ':</label>
                     <input type="number" class="form-control" id="numero_partecipanti" name="numero_partecipanti" min="2" max="32" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">' . $VCM_send . '</button>
+                <button type="submit" class="btn btn-primary my-3">' . $VCM_send . '</button>
             </form>
         </div>';
         } elseif ($mod == 2) {
@@ -118,10 +118,9 @@ if (isset($_GET['mod'])) {
                         <option value="16">16</option>
                         <option value="32">32</option>
                         <option value="64">64</option>
-                        <option value="128">128</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">' . $VCM_send . '</button>
+                <button type="submit" class="btn btn-primary my-3">' . $VCM_send . '</button>
             </form>
             </div>';
         } elseif ($mod == 3) {
@@ -153,10 +152,9 @@ if (isset($_GET['mod'])) {
                             <option value="16">16</option>
                             <option value="32">32</option>
                             <option value="64">64</option>
-                            <option value="128">128</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">' . $VCM_send . '</button>
+                    <button type="submit" class="btn btn-primary my-3">' . $VCM_send . '</button>
                 </form>
             </div>';
         }
