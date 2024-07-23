@@ -358,7 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['delete'])) {
         // Delete logic
-        if ($mod == "eliminazione") {
+        if ($mod == "campionato") {
             $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata = ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);

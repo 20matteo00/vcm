@@ -9,9 +9,9 @@ if (isset($_GET['mod'])) {
         $numeroPartecipanti = $_POST['numero_partecipanti'];
         if (isset($_POST['gironi'])) {
             $gironi = $_POST['gironi'];
-        } else{
+        } else {
             $gironi = 0;
-        }        
+        }
 
         if ($mod == 1) {
             $moda = "campionato";
@@ -69,8 +69,7 @@ if (isset($_GET['mod'])) {
           </div>';
 
         $stmt->close();
-
-    } else {// Genera il form HTML
+    } else { // Genera il form HTML
         if ($mod == 1) {
             echo '<div class="container mt-5 w-25 text-center">
             <h1>' . $VCM_league . '</h1>
@@ -158,7 +157,6 @@ if (isset($_GET['mod'])) {
                 </form>
             </div>';
         }
-
     }
 }
 
@@ -173,7 +171,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['select_players'])) {
     $numeroPartecipanti = $_POST['numero_partecipanti'];
     $gironi = $_POST['gironi'];
     $giocatoriSelezionati = $_POST['giocatori_selezionati'];
-
+    // Ordina l'array in modo casuale
+    shuffle($giocatoriSelezionati);
+    
     if (count($giocatoriSelezionati) != $numeroPartecipanti) {
         echo $VCM_error2 . $numeroPartecipanti . " " . $VCM_players;
         exit();
@@ -197,5 +197,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['select_players'])) {
     // Chiusura dello statement preparato
     $stmt_insert->close();
 }
-
-?>
