@@ -193,7 +193,7 @@ $stmt->close();
                                         $giornataBLH[$team] = $startGiornataLH;
                                         $giornataELH[$team] = $row['giornata'];
                                     }
-                                } else {
+                                } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                     $serieW = 0;
                                     $serieWH = 0;
                                     $serieL = 0;
@@ -265,7 +265,7 @@ $stmt->close();
                                         $giornataBLA[$team] = $startGiornataLA;
                                         $giornataELA[$team] = $row['giornata'];
                                     }
-                                } else {
+                                } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                     $serieW = 0;
                                     $serieWA = 0;
                                     $serieL = 0;
@@ -652,7 +652,7 @@ $stmt->close();
                                         $giornataBLH = $startGiornataLH;
                                         $giornataELH = $giornata;
                                     }
-                                } else { // Pareggio
+                                } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) { // Pareggio
                                     $serieWH = 0;
                                     $serieW = 0;
                                     $serieL = 0;
@@ -771,7 +771,7 @@ $stmt->close();
                                         $giornataBLA = $startGiornataLA;
                                         $giornataELA = $giornata;
                                     }
-                                } else { // Pareggio
+                                } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) { // Pareggio
                                     $serieWA = 0;
                                     $serieW = 0;
                                     $serieL = 0;

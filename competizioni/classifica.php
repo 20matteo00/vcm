@@ -66,10 +66,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         if ($gol1 > $gol2) {
             $statistiche[$squadra1]['vinte_casa']++;
             $statistiche[$squadra2]['perse_trasferta']++;
-        } elseif ($gol1 == $gol2) {
+        } elseif ($gol1 == $gol2 && is_numeric($gol1) && is_numeric($gol2)) {
+            
             $statistiche[$squadra1]['pari_casa']++;
             $statistiche[$squadra2]['pari_trasferta']++;
-        } else {
+        } elseif ($gol1 < $gol2) {
             $statistiche[$squadra1]['perse_casa']++;
             $statistiche[$squadra2]['vinte_trasferta']++;
         }
@@ -265,7 +266,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                         if ($row['gol1'] > $row['gol2']) {
                                             $conteggio += 3;
                                             echo "<td>" . $conteggio . "</td>";
-                                        } elseif ($row['gol1'] == $row['gol2']) {
+                                        } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
+                                            
                                             $conteggio += 1;
                                             echo "<td>" . $conteggio . "</td>";
                                         } else {
@@ -276,7 +278,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                         if ($row['gol2'] > $row['gol1']) {
                                             $conteggio += 3;
                                             echo "<td>" . $conteggio . "</td>";
-                                        } elseif ($row['gol2'] == $row['gol1']) {
+                                        } elseif ($row['gol2'] == $row['gol1'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $conteggio += 1;
                                             echo "<td>" . $conteggio . "</td>";
                                         } else {
@@ -320,7 +322,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     if ($squadra == $row['squadra1']) {
                                         if ($row['gol1'] > $row['gol2']) {
                                             $puntiH[$squadra] += 3;
-                                        } elseif ($row['gol1'] == $row['gol2']) {
+                                        } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiH[$squadra] += 1;
                                         } else {
                                             $puntiH[$squadra] += 0;
@@ -328,7 +330,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     } elseif ($squadra == $row['squadra2']) {
                                         if ($row['gol2'] > $row['gol1']) {
                                             $puntiA[$squadra] += 3;
-                                        } elseif ($row['gol2'] == $row['gol1']) {
+                                        } elseif ($row['gol2'] == $row['gol1'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiA[$squadra] += 1;
                                         } else {
                                             $puntiA[$squadra] += 0;
@@ -406,7 +408,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     if ($squadra == $row['squadra1'] && $row['giornata'] <= $giornate) {
                                         if ($row['gol1'] > $row['gol2']) {
                                             $puntiFR[$squadra] += 3;
-                                        } elseif ($row['gol1'] == $row['gol2']) {
+                                        } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiFR[$squadra] += 1;
                                         } else {
                                             $puntiFR[$squadra] += 0;
@@ -414,7 +416,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     } elseif ($squadra == $row['squadra2'] && $row['giornata'] <= $giornate) {
                                         if ($row['gol2'] > $row['gol1']) {
                                             $puntiFR[$squadra] += 3;
-                                        } elseif ($row['gol2'] == $row['gol1']) {
+                                        } elseif ($row['gol2'] == $row['gol1'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiFR[$squadra] += 1;
                                         } else {
                                             $puntiFR[$squadra] += 0;
@@ -422,7 +424,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     } elseif ($squadra == $row['squadra1'] && $row['giornata'] > $giornate) {
                                         if ($row['gol1'] > $row['gol2']) {
                                             $puntiRR[$squadra] += 3;
-                                        } elseif ($row['gol1'] == $row['gol2']) {
+                                        } elseif ($row['gol1'] == $row['gol2'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiRR[$squadra] += 1;
                                         } else {
                                             $puntiRR[$squadra] += 0;
@@ -430,7 +432,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     } elseif ($squadra == $row['squadra2'] && $row['giornata'] > $giornate) {
                                         if ($row['gol2'] > $row['gol1']) {
                                             $puntiRR[$squadra] += 3;
-                                        } elseif ($row['gol2'] == $row['gol1']) {
+                                        } elseif ($row['gol2'] == $row['gol1'] && is_numeric($row['gol1']) && is_numeric($row['gol2'])) {
                                             $puntiRR[$squadra] += 1;
                                         } else {
                                             $puntiRR[$squadra] += 0;

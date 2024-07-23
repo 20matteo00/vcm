@@ -24,6 +24,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $giornate = 2 * ($numberOfTeams - 1);
         $sections = ($ar == 1) ? ['Girone di Andata' => 0, 'Girone di Ritorno' => $giornate / 2] : ['Girone Unico' => 0];
         $par = 0;
+        $squadrexgironi = 0;
+        $partitexgiornata = 0;
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -33,6 +35,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $giornate = logBase2($numberOfTeams);
         $sections = ["Trentaduesimi", "Sedicesimi", "Ottavi", "Quarti", "Semifinali", "Finale"];
         $sections2 = ["Trentaduesimi", "Trentaduesimi", "Sedicesimi", "Sedicesimi", "Ottavi", "Ottavi", "Quarti", "Quarti", "Semifinali", "Semifinali", "Finale"];
+        $squadrexgironi = 0;
+        $partitexgiornata = 0;
         if ($ar == 1) {
             $totpartite = (($numberOfTeams - 1) * 2) - 1;
             $sec = $sections2;
@@ -48,6 +52,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     } elseif ($mod == "champions") {
         $giornate = 2 * ($numberOfTeams - 1);
         $sections = ["Fase a gironi", "Ottavi", "Quarti", "Semifinali", "Finale"];
+        $squadrexgironi = $numberOfTeams / $gironi;
+        $partitexgiornata = $gironi * ($numberOfTeams / 2);
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -57,7 +63,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     }
 
     $stmt->close();
-    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod, $ar, $tablepartite, $conn, $user, $name, $par, $gironi);
+    $scheduler = creagiornate($squadre, $numberOfTeams, $giornate, $mod, $ar, $tablepartite, $conn, $user, $name, $par, $gironi, $squadrexgironi, $j);
+
 
     $readonly = "";
     if ($finita == 1) {
@@ -262,6 +269,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo "<h3>Giornata " . ($round + 1) . "</h3>";
                     echo "</div>";
                     echo "<div class='card-body miacardbody'>";
+                    $pg = 1;
+                    $c = 0;
 
                     // Trova e visualizza tutte le partite per questa giornata
                     foreach ($scheduler as $groupName => $groupSchedule) {
@@ -298,9 +307,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                                 echo "<input type='hidden' name='round' value='" . ($round + 1) . "'>";
                                 echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler)) . "'>";
+                                echo "<input type='hidden' name='pg' value='" . $pg . "'>";
 
                                 echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                                 echo "<div class='d-flex align-items-center'>";
+                                echo "<span style='border: 1px solid black; background-color: var(--secondarycolor); color: var(--primarycolor); padding: 5px 10px; margin-right:10px; '>" . $pg . "</span>";
                                 echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
                                 echo "<span class='vs' style='margin: 0 10px;'>VS</span>";
                                 echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[1] . "</span>";
@@ -309,6 +320,12 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 echo "<span class='vs' style='margin: 0 10px;'>" . $gol . "</span>";
                                 echo "</div>";
                                 echo "</div>";
+                                if ($pg == ($partitexgiornata * $gironi)) {
+                                    $pg = 0;
+                                } elseif (($c + 1) % ($partecipanti / $gironi / 2) == 0) {
+                                    $pg++;
+                                }
+                                $c++;
                             }
                         }
                     }
@@ -346,34 +363,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $squadra2 = $match[1];
             $gol1 = $_POST['gol1' . $match[0]];
             $gol2 = $_POST['gol2' . $match[1]];
-            $sql_save = "INSERT INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata) VALUES (?, ?, ?, ?, ?, ?, ?)
+            if (isset($_POST['pg'])) {
+                $pg = $_POST['pg'];
+            } else {
+                $pg = NULL;
+            }
+            $sql_save = "INSERT INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
              ON DUPLICATE KEY UPDATE gol1 = VALUES(gol1), gol2 = VALUES(gol2)";
-            var_dump($squadra1);
             $stmt_save = $conn->prepare($sql_save);
 
             // Assicurati che gol1 e gol2 siano numeri interi
-            $stmt_save->bind_param("ssssiii", $user, $name, $squadra1, $squadra2, $gol1, $gol2, $round);
+            $stmt_save->bind_param("ssssiiii", $user, $name, $squadra1, $squadra2, $gol1, $gol2, $round, $pg);
             $stmt_save->execute();
             $stmt_save->close();
         }
     } elseif (isset($_POST['delete'])) {
         // Delete logic
         if ($mod == "campionato") {
-            $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata = ?";
+            $sql_delete = "UPDATE {$tablepartite} SET gol1 = NULL, gol2 = NULL WHERE utente = ? AND nome = ? AND giornata = ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);
             $stmt_delete->execute();
             $stmt_delete->close();
         }
         if ($mod == "eliminazione") {
-            $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata >= ?";
+            $sql_delete = "UPDATE {$tablepartite} SET gol1 = NULL, gol2 = NULL WHERE utente = ? AND nome = ? AND giornata >= ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);
             $stmt_delete->execute();
             $stmt_delete->close();
         }
     }
-    //header("Location: index.php?page=visualizza&name={$name}&mod={$mod}&tabpar={$tablepartite}&tabstat={$tablestatistiche}#giornata{$round}");
+    var_dump($round);
+
+    header("Location: index.php?page=visualizza&name={$name}&mod={$mod}&tabpar={$tablepartite}&tabstat={$tablestatistiche}#giornata{$round}");
     exit();
 }
 
@@ -382,7 +405,7 @@ function logBase2($n)
     return log($n) / log(2);
 }
 
-function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite, $conn, $user, $name, $par, $gironi)
+function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite, $conn, $user, $name, $par, $gironi, $squadrexgironi, $j)
 {
     // Check if the number of teams is even
     if ($numberOfTeams % 2 != 0) {
@@ -414,6 +437,21 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $schedule[$round][] = array_reverse($match);
             }
         }
+
+        // Save the matches in the database
+        foreach ($schedule as $round => $matches) {
+            foreach ($matches as $match) {
+                $squadra1 = $match[0];
+                $squadra2 = $match[1];
+                $giornata = $round + 1;
+
+                $sql_save = "INSERT IGNORE INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, null, null, ?, null)";
+                $stmt_save = $conn->prepare($sql_save);
+                $stmt_save->bind_param("ssssi", $user, $name, $squadra1, $squadra2, $giornata);
+                $stmt_save->execute();
+                $stmt_save->close();
+            }
+        }
     } elseif ($mod == "eliminazione") {
         $g1 = $par + 1;
         if ($ar == 1) {
@@ -443,7 +481,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
         $squadre = $teams;
 
 
-
+        $j++;
         // Iterate through rounds
         for ($round = 0; $round < $rounds; $round++) {
             $schedule[$round] = [];
@@ -451,6 +489,12 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $home = $squadre[$match];
                 $away = $squadre[count($squadre) - 1 - $match];
                 $schedule[$round][$match] = [$home, $away];
+                // Save the match in the database
+                $sql_save = "INSERT IGNORE INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, null, null, ?, null)";
+                $stmt_save = $conn->prepare($sql_save);
+                $stmt_save->bind_param("ssssi", $user, $name, $home, $away, $j);
+                $stmt_save->execute();
+                $stmt_save->close();
             }
             if ($ar == 1) {
                 $schedule[$round + 1] = [];
@@ -458,7 +502,9 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $schedule[$round + 1][] = array_reverse($match);
                 }
                 $round++;
+                $j++;
             }
+            $j++;
 
             $winners = [];
 
@@ -484,8 +530,24 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $pari = true;
                 }
             }
-            if ($ar == 1) {
-                if ($pari  || !in_array($g1, $giornata) || !in_array($g2, $giornata)) {
+            for ($k = 0; $k < count($giornata); $k += 2) {
+                if ($ar == 1) {
+                    if (!is_numeric($gol1[$k]) || !is_numeric($gol1[$k + 1]) || !is_numeric($gol2[$k]) || !is_numeric($gol2[$k + 1])) {
+                        $winners = [];
+                        break; // Exit the loop if there's a tie
+                    }
+                } else {
+                    if (!is_numeric($gol1[$k]) || !is_numeric($gol2[$k])) {
+                        
+                        $winners = [];
+                        break; // Exit the loop if there's a tie
+                    }
+                }
+            }
+            /* if ($ar == 1) {
+                var_dump($giornata);
+                
+                if ($pari   || !in_array($g1, $giornata) || !in_array($g2, $giornata) ) {
                     $winners = [];
                     break; // Exit the loop if there's a tie
                 }
@@ -496,7 +558,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $winners = [];
                     break; // Exit the loop if there's a tie
                 }
-            }
+            } */
 
             $squadre = $winners;
 
@@ -506,8 +568,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             }
         }
     } elseif ($mod == "champions") {
-        $squadrexgironi = $numberOfTeams / $gironi;
-        $partitexgiornata = $gironi * ($numberOfTeams / 2);
         $groups = [];
 
         // Suddividi le squadre nei gironi
@@ -515,7 +575,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             $groups[$i] = array_slice($teams, $i * $squadrexgironi, $squadrexgironi);
         }
 
-        var_dump($groups);
+        $schedule = [];
         foreach ($groups as $index => $group) {
             $rounds = count($group) - 1;
             $groupSchedule = [];
@@ -544,9 +604,29 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             }
 
             // Aggiungi il calendario del gruppo al calendario generale
-            $schedule['Gruppo ' . chr(65 + $index)] = $groupSchedule;
+            $schedule[$index + 1] = $groupSchedule; // Girone come numero
+        }
+
+        // Salva le partite nel database
+        $utente = 'nome_utente'; // Imposta l'utente attuale
+        $nome = 'nome_competizione'; // Imposta il nome della competizione
+        foreach ($schedule as $girone => $groupSchedule) {
+            foreach ($groupSchedule as $round => $matches) {
+                foreach ($matches as $match) {
+                    $squadra1 = $match[0];
+                    $squadra2 = $match[1];
+                    $giornata = $round + 1;
+
+                    $sql_save = "INSERT INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, null, null, ?, ?)";
+                    $stmt_save = $conn->prepare($sql_save);
+                    $stmt_save->bind_param("ssssii", $user, $name, $squadra1, $squadra2, $giornata, $girone);
+                    $stmt_save->execute();
+                    $stmt_save->close();
+                }
+            }
         }
     }
+
 
     return $schedule;
 }
