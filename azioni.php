@@ -133,6 +133,7 @@ if (isset($_GET['name']) && isset($_GET['competizione']) && isset($_GET['com']) 
             gol1 INT NOT NULL,
             gol2 INT NOT NULL,
             giornata INT NOT NULL,
+            girone INT DEFAULT 0,
             PRIMARY KEY (utente, nome, squadra1, squadra2),
             FOREIGN KEY (utente, nome) REFERENCES competizioni(utente, nome),
             FOREIGN KEY (utente, squadra1) REFERENCES squadre(utente, nome),

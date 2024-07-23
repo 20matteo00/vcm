@@ -516,7 +516,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
         }
 
         var_dump($groups);
-        /*foreach ($groups as $index => $group) {
+        foreach ($groups as $index => $group) {
             $rounds = count($group) - 1;
             $groupSchedule = [];
 
@@ -545,27 +545,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
 
             // Aggiungi il calendario del gruppo al calendario generale
             $schedule['Gruppo ' . chr(65 + $index)] = $groupSchedule;
-        }*/
-
-        // Generate the schedule for the first round
-        for ($round = 0; $round < $numberOfTeams - 1; $round++) {
-            $schedule[$round] = [];
-            for ($match = 0; $match < $partitexgiornata; $match++) {
-                $home = ($round + $match) % ($numberOfTeams - 1);
-                $away = ($numberOfTeams - 1 - $match + $round) % ($numberOfTeams - 1);
-                // Last team is fixed
-                if ($match == 0) {
-                    $away = $numberOfTeams - 1;
-                }
-                $schedule[$round][$match] = [$teams[$home], $teams[$away]];
-            }
-        }
-        // Generate the second round (return matches)
-        for ($round = $numberOfTeams - 1; $round < $rounds; $round++) {
-            $schedule[$round] = [];
-            foreach ($schedule[$round - ($numberOfTeams - 1)] as $match) {
-                $schedule[$round][] = array_reverse($match);
-            }
         }
     }
 
