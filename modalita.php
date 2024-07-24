@@ -184,7 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['select_players'])) {
     // Ordina l'array in modo casuale
     shuffle($giocatoriSelezionati);
 
-    var_dump($fasefinale);
     if (count($giocatoriSelezionati) != $numeroPartecipanti) {
         echo $VCM_error2 . $numeroPartecipanti . " " . $VCM_players;
         exit();

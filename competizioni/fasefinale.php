@@ -3,15 +3,44 @@ $user = $_SESSION['username'];
 if (isset($_GET['name']) && isset($_GET['mod'])) {
     $name = $_GET['name'];
     $mod = $_GET['mod'];
+    $ar = $_GET['ar'];
     $tablepartite = $_GET['tabpar'];
     $tablestatistiche = $_GET['tabstat'];
+    $totpartite = $_GET['totpar'];
 
-    $sql = "UPDATE competizioni SET finita = 1 WHERE utente = ? AND nome = ?";
+    // Query per contare le partite e controllare i risultati
+    $sql = "SELECT COUNT(*) AS total_matches, 
+            COUNT(CASE WHEN gol1 IS NOT NULL AND gol2 IS NOT NULL THEN 1 END) AS non_null_results 
+            FROM $tablepartite 
+            WHERE utente = ? AND nome = ?";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $user, $name);
     $stmt->execute();
     $result = $stmt->get_result();
-    $stmt->close();
+    $row = $result->fetch_assoc();
+
+    $totalMatches = $row['total_matches'];
+    $nonNullResults = $row['non_null_results'];
+
+    if($nonNullResults == $totpartite){
+        $sql = "UPDATE competizioni SET finita = 1 WHERE utente = ? AND nome = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $user, $name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+    } else {
+        $sql = "UPDATE competizioni SET finita = 0 WHERE utente = ? AND nome = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $user, $name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        header("location: index.php?page=visualizza&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche");
+        exit();
+    }
+
 
     $sql = "SELECT * FROM competizioni WHERE utente=? AND nome=?";
     $stmt = $conn->prepare($sql);
@@ -24,7 +53,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $gironi = $row['gironi'];
     $fasefinale = $row['fasefinale'];
 
-    $limit = $fasefinale/$gironi;
+    $limit = $fasefinale / $gironi;
 
     $squadrepassate = [];
     for ($i = 1; $i <= $gironi; $i++) {
@@ -47,7 +76,39 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             $squadrepassate[] = $row['squadra'];
         }
     }
-    var_dump($squadrepassate);
+
+    $nomeCampionato = $name." - Fase Finale";
+    $moda = "eliminazione";
+    $numeroPartecipanti = count($squadrepassate);
+    $gironi = 0;
+    $fasefinale = 0;
+    $giocatoriSelezionati = $squadrepassate;
+    // Ordina l'array in modo casuale
+    shuffle($giocatoriSelezionati);
+
+    if (count($giocatoriSelezionati) != $numeroPartecipanti) {
+        echo $VCM_error2 . $numeroPartecipanti . " " . $VCM_players;
+        exit();
+    }
+    // Unire l'array $giocatoriSelezionati in una stringa separata da virgole
+    $giocatoriSelezionatiStringa = implode(",", $giocatoriSelezionati);
+
+    // Prepara la query SQL per inserire i dati nella tabella competizioni
+    $sql_insert = "INSERT INTO competizioni (utente, nome, modalita, gironi, ar, partecipanti, fasefinale, squadre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt_insert = $conn->prepare($sql_insert);
+    $stmt_insert->bind_param("sssiiiis", $user, $nomeCampionato, $moda, $gironi, $ar, $numeroPartecipanti, $fasefinale, $giocatoriSelezionatiStringa);
+
+    // Esegui la query e controlla il risultato
+    if ($stmt_insert->execute()) {
+        header("Location: index.php?page=competizioni&com=0");
+        exit();
+    } else {
+        echo $VCM_error1 . $stmt_insert->error;
+    }
+
+    // Chiusura dello statement preparato
+    $stmt_insert->close();
+
+
 
 }
-?>

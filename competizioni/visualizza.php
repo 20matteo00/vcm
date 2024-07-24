@@ -51,7 +51,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         }
         $p = (count($sec) - $giornate);
     } elseif ($mod == "champions") {
-        $giornate = 2 * (($numberOfTeams / $gironi)-1);
+        $giornate = 2 * (($numberOfTeams / $gironi) - 1);
         $sections = ["Fase a gironi", "Ottavi", "Quarti", "Semifinali", "Finale"];
         $squadrexgironi = $numberOfTeams / $gironi;
         $partitexgiornata = $gironi * ($numberOfTeams / 2);
@@ -81,10 +81,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $count = $row['count'];
     $stmt->close();
 
-    ?>
+?>
     <div class="container my-5">
         <h1 class="text-center m-5"><?php echo $name ?></h1>
-        <?php include ("layout/menu_dettagli.php") ?>
+        <?php include("layout/menu_dettagli.php") ?>
 
         <div class="row">
             <?php
@@ -92,7 +92,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                 foreach ($sections as $title => $start) {
                     echo "<h2 class='text-center mt-5'>{$title}</h2>";
                     for ($round = $start; $round < $start + $giornate / 2; $round++) {
-                        echo "<div id='giornata" . ($round + 1) . "' class='col-6 text-center p-3'>";
+                        echo "<div id='giornata" . ($round + 1) . "' class='col-lg-6 col-12 text-center p-3'>";
                         echo "<form action='#' method='POST'>";
                         echo "<div class='card shadow-sm miacard'>";
                         echo "<div class='card-header partecipants miacardbody'>";
@@ -155,9 +155,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                 }
             } elseif ($mod == "eliminazione") {
                 $round = 0;
-
+                $parr = $par + 1;
                 for ($i = $par; $i < count($sec); $i++) {
-                    echo "<div id='giornata" . ($round + 1) . "' class='col-6 text-center p-3'>";
+
+                    echo "<div id='giornata" . ($parr++) . "' class='col-lg-6 col-12 text-center p-3'>";
                     echo "<form action='#' method='POST'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
@@ -207,6 +208,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             echo "</div>";
                             echo "</div>";
                         }
+                        $j++;
+                        if ($ar == 0) {
+                            $j++;
+                        }
                     }
                     echo "</div>";
                     echo "<div class='card-footer partecipants miacardbody d-flex justify-content-between'>";
@@ -219,11 +224,6 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo "</form>";
                     echo "</div>";
                     $round++;
-                    $j++;
-                    if ($ar == 0) {
-                        /* $round++; */
-                        $j++;
-                    }
                 }
                 $sql = "SELECT * FROM $tablepartite WHERE utente=? AND nome=? AND giornata=11";
                 $stmt = $conn->prepare($sql);
@@ -233,7 +233,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                 $row = $result->fetch_assoc();
                 $stmt->close();
                 if (isset($row['giornata']) && ($row["gol1"] != $row["gol2"])) {
-                    echo "<div class='col-6 text-center p-3'>";
+                    echo "<div class='col-lg-6 col-12 text-center p-3'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
                     echo "Vincitore";
@@ -261,7 +261,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 
                 // Per ogni giornata, visualizza tutte le partite
                 for ($round = 0; $round <= $maxRound; $round++) {
-                    echo "<div id='giornata" . ($round + 1) . "' class='col-6 text-center p-3'>";
+                    echo "<div id='giornata" . ($round + 1) . "' class='col-lg-6 col-12 text-center p-3'>";
                     echo "<form action='#' method='POST'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
@@ -327,7 +327,6 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 $c++;
                             }
                         }
-
                     }
 
                     echo "</div>";
@@ -358,22 +357,22 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 
                 $totalMatches = $row['total_matches'];
                 $nonNullResults = $row['non_null_results'];
-                if($nonNullResults == $totpartite){
-                    echo "<div class='alert alert-success'>Tutte le partite della fase a gironi sono state giocate, Passa alla fase finale <a href='index.php?page=fasefinale&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche' class='btn btn-success my-2'>Fase Finale</a></div>";
+                if ($nonNullResults == $totpartite) {
+                    echo "<div class='alert alert-success'>Tutte le partite della fase a gironi sono state giocate, Passa alla fase finale </div>
+                    <a href='index.php?page=fasefinale&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpartite&ar=$ar' class='btn btn-success my-2'>Fase Finale</a>
+                    ";
                 }
-
             }
 
             ?>
         </div>
     </div>
-    <?php
+<?php
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $round = $_POST['round'];
     $scheduler = json_decode($_POST['scheduler'], true);
-
     if (isset($_POST['save'])) {
         foreach ($scheduler as $index => $match) {
             $squadra1 = $match[0];
@@ -393,6 +392,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_save->bind_param("ssssiiii", $user, $name, $squadra1, $squadra2, $gol1, $gol2, $round, $pg);
             $stmt_save->execute();
             $stmt_save->close();
+
+            if ($mod == "eliminazione") {
+                $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata > ?";
+                $stmt_delete = $conn->prepare($sql_delete);
+                $stmt_delete->bind_param("ssi", $user, $name, $round);
+                $stmt_delete->execute();
+                $stmt_delete->close();
+            }
         }
     } elseif (isset($_POST['delete'])) {
         // Delete logic
@@ -510,6 +517,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $stmt_save->bind_param("ssssi", $user, $name, $home, $away, $j);
                 $stmt_save->execute();
                 $stmt_save->close();
+                
             }
             if ($ar == 1) {
                 $schedule[$round + 1] = [];
@@ -517,6 +525,9 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $schedule[$round + 1][] = array_reverse($match);
                 }
                 $round++;
+                $j++;
+            }
+            if($ar == 0){
                 $j++;
             }
             $j++;

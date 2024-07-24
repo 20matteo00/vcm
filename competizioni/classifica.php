@@ -215,7 +215,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 
                                     echo "<tr>";
                                     echo "<td>{$rank}</td>";
-                                    echo "<td>{$girone}</td>";
+                                    if ($mod == "champions") {
+
+                                        echo "<td>{$girone}</td>";
+                                    }                                    
                                     echo "<td>{$squadra}</td>";
                                     echo "<td>{$punti}</td>";
                                     echo "<td>{$giocate}</td>";

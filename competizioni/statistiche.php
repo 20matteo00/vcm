@@ -333,7 +333,7 @@ $stmt->close();
                 
                     while ($row = $result->fetch_assoc()) {
                         $totalGoals = $row['gol1'] + $row['gol2'];
-                        if ($totalGoals > $maxgol) {
+                        if ($totalGoals > $maxgol && $totalGoals != 0) {
                             $maxgol = $totalGoals;
                             $infomaxgol = [ // Inizializza con la nuova partita massima
                                 [
@@ -344,7 +344,7 @@ $stmt->close();
                                     'giornata' => $row['giornata']
                                 ]
                             ];
-                        } elseif ($totalGoals == $maxgol) {
+                        } elseif ($totalGoals == $maxgol && $totalGoals != 0) {
                             $infomaxgol[] = [ // Aggiungi la partita a parimerito
                                 'squadra1' => $row['squadra1'],
                                 'squadra2' => $row['squadra2'],
@@ -354,7 +354,7 @@ $stmt->close();
                             ];
                         }
                         $gapGoals = abs($row['gol1'] - $row['gol2']);
-                        if ($gapGoals > $gapgol) {
+                        if ($gapGoals > $gapgol && $gapGoals != 0) {
                             $gapgol = $gapGoals;
                             $infogapgol = [ // Inizializza con la nuova partita massima
                                 [
@@ -365,7 +365,7 @@ $stmt->close();
                                     'giornata' => $row['giornata']
                                 ]
                             ];
-                        } elseif ($gapGoals == $gapgol) {
+                        } elseif ($gapGoals == $gapgol && $gapGoals != 0) {
                             $infogapgol[] = [ // Aggiungi la partita a parimerito
                                 'squadra1' => $row['squadra1'],
                                 'squadra2' => $row['squadra2'],
