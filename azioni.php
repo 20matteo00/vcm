@@ -153,6 +153,7 @@ if (isset($_GET['name']) && isset($_GET['competizione']) && isset($_GET['com']) 
             perse_trasferta INT NOT NULL,
             fatti_trasferta INT NOT NULL,
             subiti_trasferta INT NOT NULL,
+            girone INT NULL,
             PRIMARY KEY (utente, nome, squadra),
             FOREIGN KEY (utente, nome) REFERENCES competizioni(utente, nome),
             FOREIGN KEY (utente, squadra) REFERENCES squadre(utente, nome)

@@ -86,40 +86,45 @@ function limitCheckboxes(maxSelections) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const table = document.getElementById("myTable");
-    const headers = table.querySelectorAll("th");
-    const tbody = table.querySelector("tbody");
+    // Trova tutte le tabelle con ID che iniziano con "myTable"
+    const tables = document.querySelectorAll('table[id^="myTable"]');
 
-    headers.forEach((header, index) => {
-        header.addEventListener("click", function () {
-            const rows = Array.from(tbody.querySelectorAll("tr"));
-            const isAsc = header.getAttribute("data-order") === "asc";
-            const direction = isAsc ? 1 : -1;
+    tables.forEach(table => {
+        const headers = table.querySelectorAll("th");
+        const tbody = table.querySelector("tbody");
 
-            const sortedRows = rows.sort((a, b) => {
-                const aText = a.children[index].innerText;
-                const bText = b.children[index].innerText;
-                const aValue = isNaN(aText) ? aText.toLowerCase() : parseFloat(aText);
-                const bValue = isNaN(bText) ? bText.toLowerCase() : parseFloat(bText);
+        headers.forEach((header, index) => {
+            header.addEventListener("click", function () {
+                const rows = Array.from(tbody.querySelectorAll("tr"));
+                const isAsc = header.getAttribute("data-order") === "asc";
+                const direction = isAsc ? 1 : -1;
 
-                if (aValue < bValue) {
-                    return -1 * direction;
-                }
-                if (aValue > bValue) {
-                    return 1 * direction;
-                }
-                return 0;
+                const sortedRows = rows.sort((a, b) => {
+                    const aText = a.children[index].innerText;
+                    const bText = b.children[index].innerText;
+                    const aValue = isNaN(aText) ? aText.toLowerCase() : parseFloat(aText);
+                    const bValue = isNaN(bText) ? bText.toLowerCase() : parseFloat(bText);
+
+                    if (aValue < bValue) {
+                        return -1 * direction;
+                    }
+                    if (aValue > bValue) {
+                        return 1 * direction;
+                    }
+                    return 0;
+                });
+
+                // Toggle the data-order attribute
+                header.setAttribute("data-order", isAsc ? "desc" : "asc");
+
+                // Remove all rows from the table and append the sorted rows
+                tbody.innerHTML = "";
+                sortedRows.forEach(row => tbody.appendChild(row));
             });
-
-            // Toggle the data-order attribute
-            header.setAttribute("data-order", isAsc ? "desc" : "asc");
-
-            // Remove all rows from the table and append the sorted rows
-            tbody.innerHTML = "";
-            sortedRows.forEach(row => tbody.appendChild(row));
         });
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Seleziona tutti gli input

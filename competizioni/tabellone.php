@@ -7,7 +7,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $tablestatistiche = $_GET['tabstat'];
 
 
-?>
+    ?>
     <div class="container my-5">
         <div class="col-12">
             <div class="card">
@@ -63,20 +63,76 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 </tbody>
                             </table>
                         </div>
-                    <?php } elseif ($mod == "eliminazione") { ?>
-
                     <?php } elseif ($mod == "champions") { ?>
+                        <?php
+                        $sql = "SELECT * FROM competizioni WHERE utente = ? AND nome = ?";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("ss", $user, $name);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $gironi = $row['gironi'];
+                        $stmt->close();
 
+                        for ($i = 1; $i <= $gironi; $i++) {
+                            ?>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered text-center my-5">
+                                    <p class="fw-bold text-center">Girone <?php echo $i ?></p>
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <?php
+                                            // Recupera le squadre per ogni girone
+                                            $sql = "SELECT DISTINCT squadra FROM $tablestatistiche WHERE utente = ? AND nome = ? AND girone = ?";
+                                            $stmt = $conn->prepare($sql);
+                                            $stmt->bind_param("ssi", $user, $name, $i);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
+                                            $squadre = [];
+                                            while ($row = $result->fetch_assoc()) {
+                                                $squadre[] = $row['squadra'];
+                                                echo "<th>{$row['squadra']}</th>";
+                                            }
+                                            $stmt->close();
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        for ($j = 0; $j < count($squadre); $j++) {
+                                            echo "<tr>";
+                                            echo "<th>{$squadre[$j]}</th>"; // Nome della squadra nella prima colonna
+                                            for ($k = 0; $k < count($squadre); $k++) {
+                                                if ($j === $k) {
+                                                    echo "<td style='background-color: var(--secondarycolor)'></td>"; // Evitiamo di mettere il risultato di una squadra contro se stessa
+                                                } else {
+                                                    $sql = "SELECT gol1, gol2 FROM $tablepartite WHERE utente = ? AND nome = ? AND girone = ? AND squadra1 = ? AND squadra2 = ?";
+                                                    $stmt = $conn->prepare($sql);
+                                                    $stmt->bind_param("ssiss", $user, $name, $i, $squadre[$j], $squadre[$k]);
+                                                    $stmt->execute();
+                                                    $result = $stmt->get_result();
+                                                    $row = $result->fetch_assoc();
+                                                    $gol1 = isset($row['gol1']) ? $row['gol1'] : "";
+                                                    $gol2 = isset($row['gol2']) ? $row['gol2'] : "";
+                                                    echo "<td>$gol1 - $gol2</td>";
+                                                }
+                                            }
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php } ?>
                     <?php } ?>
-
-
                 </div>
-                <?php include("layout/menu_dettagli.php") ?>
+                <?php include ("layout/menu_dettagli.php") ?>
             </div>
         </div>
     </div>
 
-<?php
+    <?php
 
 
 }
