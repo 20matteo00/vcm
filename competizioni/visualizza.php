@@ -26,6 +26,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $par = 0;
         $squadrexgironi = 0;
         $partitexgiornata = 0;
+        $j=0;
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -54,6 +55,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $sections = ["Fase a gironi", "Ottavi", "Quarti", "Semifinali", "Finale"];
         $squadrexgironi = $numberOfTeams / $gironi;
         $partitexgiornata = $gironi * ($numberOfTeams / 2);
+        $j=0;
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -79,10 +81,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $count = $row['count'];
     $stmt->close();
 
-?>
+    ?>
     <div class="container my-5">
         <h1 class="text-center m-5"><?php echo $name ?></h1>
-        <?php include("layout/menu_dettagli.php") ?>
+        <?php include ("layout/menu_dettagli.php") ?>
 
         <div class="row">
             <?php
@@ -249,7 +251,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             } elseif ($mod == "champions") {
                 // Supponiamo che $scheduler sia organizzato in un array associativo
                 // con i giorni come chiavi e le partite come valori.
-
+        
                 // Trova il numero massimo di giornate
                 $maxRound = 0;
                 foreach ($scheduler as $groupSchedule) {
@@ -347,7 +349,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             ?>
         </div>
     </div>
-<?php
+    <?php
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -379,7 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['delete'])) {
         // Delete logic
-        if ($mod == "campionato") {
+        if ($mod == "campionato" || $mod=="champions") {
             $sql_delete = "UPDATE {$tablepartite} SET gol1 = NULL, gol2 = NULL WHERE utente = ? AND nome = ? AND giornata = ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);
@@ -387,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_delete->close();
         }
         if ($mod == "eliminazione") {
-            $sql_delete = "UPDATE {$tablepartite} SET gol1 = NULL, gol2 = NULL WHERE utente = ? AND nome = ? AND giornata >= ?";
+            $sql_delete = "DELETE FROM {$tablepartite} WHERE utente = ? AND nome = ? AND giornata >= ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);
             $stmt_delete->execute();
@@ -529,25 +531,50 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 } else {
                     $pari = true;
                 }
-            }
-            for ($k = 0; $k < count($giornata); $k += 2) {
-                if ($ar == 1) {
-                    if (!is_numeric($gol1[$k]) || !is_numeric($gol1[$k + 1]) || !is_numeric($gol2[$k]) || !is_numeric($gol2[$k + 1])) {
-                        $winners = [];
-                        break; // Exit the loop if there's a tie
-                    }
-                } else {
-                    if (!is_numeric($gol1[$k]) || !is_numeric($gol2[$k])) {
-                        
-                        $winners = [];
-                        break; // Exit the loop if there's a tie
+            }/*
+           for ($k = 0; $k < count($giornata); $k += 2) {
+               if ($ar == 1) {
+                   if (!is_numeric($gol1[$k]) || !is_numeric($gol1[$k + 1]) || !is_numeric($gol2[$k]) || !is_numeric($gol2[$k + 1])) {
+                       $winners = [];
+                       break; // Exit the loop if there's a tie
+                   }
+               } else {
+                   if (!is_numeric($gol1[$k]) || !is_numeric($gol2[$k])) {
+                       
+                       $winners = [];
+                       break; // Exit the loop if there's a tie
+                   }
+               }
+           }*/
+            if ($ar == 1) {
+                $ggg = false;
+                $sql = "SELECT * FROM $tablepartite WHERE utente=? AND nome=? AND giornata=?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssi", $user, $name, $g1);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    if (!is_numeric($row['gol1']) || !is_numeric($row['gol2'])) {
+                        $ggg = true;
+                        break; // Non ha senso continuare a controllare se troviamo già un non-numerico
                     }
                 }
-            }
-            /* if ($ar == 1) {
-                var_dump($giornata);
-                
-                if ($pari   || !in_array($g1, $giornata) || !in_array($g2, $giornata) ) {
+                $stmt->close(); // Chiudi lo statement
+
+                $sql = "SELECT * FROM $tablepartite WHERE utente=? AND nome=? AND giornata=?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssi", $user, $name, $g2);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    if (!is_numeric($row['gol1']) || !is_numeric($row['gol2'])) {
+                        $ggg = true;
+                        break; // Non ha senso continuare a controllare se troviamo già un non-numerico
+                    }
+                }
+                $stmt->close(); // Chiudi lo statement
+
+                if ($pari || !in_array($g1, $giornata) || !in_array($g2, $giornata) || $ggg) {
                     $winners = [];
                     break; // Exit the loop if there's a tie
                 }
@@ -558,7 +585,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $winners = [];
                     break; // Exit the loop if there's a tie
                 }
-            } */
+            }
 
             $squadre = $winners;
 
@@ -617,7 +644,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                     $squadra2 = $match[1];
                     $giornata = $round + 1;
 
-                    $sql_save = "INSERT INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, null, null, ?, ?)";
+                    $sql_save = "INSERT IGNORE INTO {$tablepartite} (utente, nome, squadra1, squadra2, gol1, gol2, giornata, girone) VALUES (?, ?, ?, ?, null, null, ?, ?)";
                     $stmt_save = $conn->prepare($sql_save);
                     $stmt_save->bind_param("ssssii", $user, $name, $squadra1, $squadra2, $giornata, $girone);
                     $stmt_save->execute();

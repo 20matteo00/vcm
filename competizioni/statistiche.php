@@ -52,7 +52,11 @@ $stmt->close();
                                 echo '<tr>';
                                 echo '<td>' . htmlspecialchars($row['giornata']) . '</td>';
                                 echo '<td>' . htmlspecialchars($row['squadra1']) . ' - ' . htmlspecialchars($row['squadra2']) . '</td>';
-                                echo '<td>' . htmlspecialchars($row['gol1']) . ' - ' . htmlspecialchars($row['gol2']) . '</td>';
+                                if(is_numeric($row['gol1']) && is_numeric($row['gol2'])){
+                                    echo '<td>' . htmlspecialchars($row['gol1']) . ' - ' . htmlspecialchars($row['gol2']) . '</td>';
+                                } else {
+                                    echo '<td>-</td>';
+                                }
                                 echo '</tr>';
                             }
                             echo '</tbody>';
