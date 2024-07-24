@@ -195,7 +195,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                             echo "<input type ='hidden' name='round' value='" . ($j + 1) . "'>";
                             echo "<input type='hidden' name='sec' value='" . $sec[$i] . "'>";
-                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[0][$round])) . "'>";
+                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";

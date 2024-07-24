@@ -134,3 +134,50 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const gironiSelect = document.getElementById("gironi");
+    const partecipantiSelect = document.getElementById("numero_partecipanti");
+    const faseFinaleSelect = document.getElementById("numero_partecipanti_fasefinale");
+
+    const optionsMapping = {
+        2: [8, 16, 32],  // Available options for 2 gironi
+        4: [16, 32, 64],  // Available options for 4 gironi
+        8: [32, 64, 128]       // Available options for 8 gironi
+    };
+
+    const faseFinaleMapping = {
+        8: [4, 2],  // Available options for 8 partecipanti
+        16: [8, 4],  // Available options for 16 partecipanti
+        32: [16, 8], // Available options for 32 partecipanti
+        64: [32, 16], // Available options for 64 partecipanti
+        128: [64, 32] // Available options for 128 partecipanti
+    };
+
+    function populateOptions(selectElement, options) {
+        selectElement.innerHTML = "";
+        options.forEach(function (value) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.text = value;
+            selectElement.appendChild(option);
+        });
+    }
+
+    gironiSelect.addEventListener("change", function () {
+        const selectedValue = parseInt(gironiSelect.value);
+        const availableOptions = optionsMapping[selectedValue] || [];
+        populateOptions(partecipantiSelect, availableOptions);
+        partecipantiSelect.dispatchEvent(new Event("change"));
+    });
+
+    partecipantiSelect.addEventListener("change", function () {
+        const selectedValue = parseInt(partecipantiSelect.value);
+        const availableOptions = faseFinaleMapping[selectedValue] || [];
+        populateOptions(faseFinaleSelect, availableOptions);
+    });
+
+    // Trigger change event to populate the initial options based on the default selected value
+    gironiSelect.dispatchEvent(new Event("change"));
+});

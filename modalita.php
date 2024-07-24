@@ -12,6 +12,11 @@ if (isset($_GET['mod'])) {
         } else {
             $gironi = 0;
         }
+        if (isset($_POST['numero_partecipanti_fasefinale'])) {
+            $fasefinale = $_POST['numero_partecipanti_fasefinale'];
+        } else {
+            $fasefinale = 0;
+        }
 
         if ($mod == 1) {
             $moda = "campionato";
@@ -27,7 +32,7 @@ if (isset($_GET['mod'])) {
             }
         } elseif ($mod == 3) {
             $moda = "champions";
-            if (!is_numeric($andataRitorno) || !is_numeric($numeroPartecipanti) || ($andataRitorno != 1 && $andataRitorno != 0) || ($numeroPartecipanti < 16 || $numeroPartecipanti > 128) || ($gironi < 2 || $gironi > 8)) {
+            if (!is_numeric($andataRitorno) || !is_numeric($numeroPartecipanti) || ($andataRitorno != 1 && $andataRitorno != 0) || ($numeroPartecipanti < 8 || $numeroPartecipanti > 128) || ($gironi < 2 || $gironi > 8)) {
                 header("Location: index.php?page=home");
                 exit();
             }
@@ -40,6 +45,7 @@ if (isset($_GET['mod'])) {
                 <input type="hidden" name="modalita" value="' . $moda . '">
                 <input type="hidden" name="nome_campionato" value="' . $nomeCampionato . '">
                 <input type="hidden" name="numero_partecipanti" value="' . $numeroPartecipanti . '">
+                <input type="hidden" name="numero_partecipanti_fasefinale" value="' . $fasefinale . '">
                 <input type="hidden" name="gironi" value="' . $gironi . '">
                 <h3>' . $VCM_choose . ' ' . $numeroPartecipanti . ' ' . $VCM_players . '</h3>';
 
@@ -140,17 +146,20 @@ if (isset($_GET['mod'])) {
                     <div class="form-group mt-3">
                         <label for="' . $VCM_groups . '">' . $VCM_groups . ':</label>
                         <select class="form-control" id="gironi" name="gironi" required>
-                            <option value="2">2</option>
-                            <option value="4">4</option>
                             <option value="8">8</option>
+                            <option value="4">4</option>
+                            <option value="2">2</option>
+
                         </select>
                     </div>
                     <div class="form-group mt-3">
                         <label for="' . $VCM_partecipants . '">' . $VCM_partecipants . ':</label>
                         <select class="form-control" id="numero_partecipanti" name="numero_partecipanti" required>
-                            <option value="16">16</option>
-                            <option value="32">32</option>
-                            <option value="64">64</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="fase_finale">Fase Finale:</label>
+                        <select class="form-control" id="numero_partecipanti_fasefinale" name="numero_partecipanti_fasefinale" required>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary my-3">' . $VCM_send . '</button>
@@ -170,10 +179,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['select_players'])) {
     $andataRitorno = $_POST['andata_ritorno'];
     $numeroPartecipanti = $_POST['numero_partecipanti'];
     $gironi = $_POST['gironi'];
+    $fasefinale = $_POST['numero_partecipanti_fasefinale'];
     $giocatoriSelezionati = $_POST['giocatori_selezionati'];
     // Ordina l'array in modo casuale
     shuffle($giocatoriSelezionati);
-    
+
+    var_dump($fasefinale);
     if (count($giocatoriSelezionati) != $numeroPartecipanti) {
         echo $VCM_error2 . $numeroPartecipanti . " " . $VCM_players;
         exit();
@@ -182,9 +193,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['select_players'])) {
     $giocatoriSelezionatiStringa = implode(",", $giocatoriSelezionati);
 
     // Prepara la query SQL per inserire i dati nella tabella competizioni
-    $sql_insert = "INSERT INTO competizioni (utente, nome, modalita, gironi, ar, partecipanti, squadre) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql_insert = "INSERT INTO competizioni (utente, nome, modalita, gironi, ar, partecipanti, fasefinale, squadre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("sssiiis", $user, $nomeCampionato, $moda, $gironi, $andataRitorno, $numeroPartecipanti, $giocatoriSelezionatiStringa);
+    $stmt_insert->bind_param("sssiiiis", $user, $nomeCampionato, $moda, $gironi, $andataRitorno, $numeroPartecipanti, $fasefinale, $giocatoriSelezionatiStringa);
 
     // Esegui la query e controlla il risultato
     if ($stmt_insert->execute()) {
