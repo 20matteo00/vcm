@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 24, 2024 alle 20:38
+-- Creato il: Lug 24, 2024 alle 22:37
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 8.1.10
 
@@ -42,6 +42,28 @@ CREATE TABLE `competizioni` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `gruppi`
+--
+
+CREATE TABLE `gruppi` (
+  `utente` varchar(200) NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `colore1` varchar(200) NOT NULL,
+  `colore2` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `gruppi`
+--
+
+INSERT INTO `gruppi` (`utente`, `nome`, `colore1`, `colore2`) VALUES
+('a', '0', '#000000', '#ffffff'),
+('a', 'Serie a', '#0000ff', '#ffffff'),
+('a', 'Serie b', '#008000', '#ffffff');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `squadre`
 --
 
@@ -49,6 +71,7 @@ CREATE TABLE `squadre` (
   `utente` varchar(200) NOT NULL,
   `nome` varchar(200) NOT NULL,
   `forza` int(50) NOT NULL,
+  `gruppo` varchar(200) NOT NULL DEFAULT '0',
   `colore1` varchar(200) NOT NULL,
   `colore2` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -57,39 +80,39 @@ CREATE TABLE `squadre` (
 -- Dump dei dati per la tabella `squadre`
 --
 
-INSERT INTO `squadre` (`utente`, `nome`, `forza`, `colore1`, `colore2`) VALUES
-('a', 'Atalanta', 436, '#0080ff', '#000000'),
-('a', 'Bologna', 277, '#ff0000', '#0000a0'),
-('a', 'Brescia', 19, '#ffffff', '#0000ff'),
-('a', 'Cagliari', 71, '#ff2020', '#0000a0'),
-('a', 'Cesena', 13, '#ffffff', '#000000'),
-('a', 'Como', 61, '#ffffff', '#0000a0'),
-('a', 'Cosenza', 13, '#ff0000', '#000040'),
-('a', 'Cremonese', 37, '#df0000', '#cda432'),
-('a', 'Empoli', 39, '#0000ff', '#ffffff'),
-('a', 'Fiorentina', 234, '#8000ff', '#ff0080'),
-('a', 'Frosinone', 28, '#ffff00', '#0000ff'),
-('a', 'Genoa', 987, '#ff0000', '#0000ff'),
-('a', 'Inter', 713, '#000000', '#004bff'),
-('a', 'Juventus', 566, '#000000', '#ffffff'),
-('a', 'Lazio', 228, '#ffffff', '#80ffff'),
-('a', 'Lecce', 96, '#408080', '#ffff80'),
-('a', 'Milan', 565, '#000000', '#ff0000'),
-('a', 'Modena', 18, '#ffff80', '#0000a0'),
-('a', 'Monza', 95, '#ff0000', '#ffffff'),
-('a', 'Napoli', 495, '#ffffff', '#80ffff'),
-('a', 'Palermo', 40, '#ff80ff', '#000000'),
-('a', 'Parma', 86, '#cda434', '#000000'),
-('a', 'Pisa', 28, '#1414ff', '#ffffff'),
-('a', 'Roma', 276, '#ffb000', '#ff0000'),
-('a', 'Salernitana', 57, '#800000', '#ffffff'),
-('a', 'Sampdoria', 33, '#0000ff', '#ffffff'),
-('a', 'Sassuolo', 120, '#008000', '#000000'),
-('a', 'Spezia', 26, '#ffffff', '#000000'),
-('a', 'Torino', 157, '#800000', '#ffffff'),
-('a', 'Udinese', 149, '#808080', '#ffffff'),
-('a', 'Venezia', 47, '#008000', '#ff8040'),
-('a', 'Verona', 62, '#0000a0', '#ffff00');
+INSERT INTO `squadre` (`utente`, `nome`, `forza`, `gruppo`, `colore1`, `colore2`) VALUES
+('a', 'Atalanta', 436, 'Serie a', '#0080ff', '#000000'),
+('a', 'Bologna', 277, 'Serie a', '#ff0000', '#0000a0'),
+('a', 'Brescia', 19, 'Serie b', '#ffffff', '#0000ff'),
+('a', 'Cagliari', 71, 'Serie a', '#ff2020', '#0000a0'),
+('a', 'Cesena', 13, 'Serie b', '#ffffff', '#000000'),
+('a', 'Como', 61, 'Serie a', '#ffffff', '#0000a0'),
+('a', 'Cosenza', 13, 'Serie b', '#ff0000', '#000040'),
+('a', 'Cremonese', 37, 'Serie b', '#df0000', '#cda432'),
+('a', 'Empoli', 39, 'Serie a', '#0000ff', '#ffffff'),
+('a', 'Fiorentina', 234, 'Serie a', '#8000ff', '#ff0080'),
+('a', 'Frosinone', 28, 'Serie b', '#ffff00', '#0000ff'),
+('a', 'Genoa', 987, 'Serie a', '#ff0000', '#0000ff'),
+('a', 'Inter', 713, 'Serie a', '#0080ff', '#000000'),
+('a', 'Juventus', 566, 'Serie a', '#000000', '0'),
+('a', 'Lazio', 228, 'Serie a', '#ffffff', '#80ffff'),
+('a', 'Lecce', 96, 'Serie a', '#408080', '#ffff80'),
+('a', 'Milan', 565, 'Serie a', '#ff0000', '#000000'),
+('a', 'Modena', 18, 'Serie b', '#ffff80', '#0000a0'),
+('a', 'Monza', 95, 'Serie a', '#ff0000', '#ffffff'),
+('a', 'Napoli', 495, 'Serie a', '#ffffff', '#80ffff'),
+('a', 'Palermo', 40, 'Serie b', '#ff80ff', '#000000'),
+('a', 'Parma', 86, 'Serie a', '#cda434', '#000000'),
+('a', 'Pisa', 28, 'Serie b', '#1414ff', '#ffffff'),
+('a', 'Roma', 276, 'Serie a', '#ffb000', '#ff0000'),
+('a', 'Salernitana', 57, 'Serie b', '#800000', '#ffffff'),
+('a', 'Sampdoria', 33, 'Serie b', '#0000ff', '#ffffff'),
+('a', 'Sassuolo', 120, 'Serie b', '#008000', '#000000'),
+('a', 'Spezia', 26, 'Serie b', '#ffffff', '#000000'),
+('a', 'Torino', 157, 'Serie a', '#800000', '#ffffff'),
+('a', 'Udinese', 149, 'Serie a', '#808080', '#ffffff'),
+('a', 'Venezia', 47, 'Serie a', '#008000', '#ff8040'),
+('a', 'Verona', 62, 'Serie a', '#0000a0', '#ffff00');
 
 -- --------------------------------------------------------
 
@@ -120,10 +143,17 @@ ALTER TABLE `competizioni`
   ADD PRIMARY KEY (`utente`,`nome`);
 
 --
+-- Indici per le tabelle `gruppi`
+--
+ALTER TABLE `gruppi`
+  ADD PRIMARY KEY (`utente`,`nome`);
+
+--
 -- Indici per le tabelle `squadre`
 --
 ALTER TABLE `squadre`
-  ADD PRIMARY KEY (`utente`,`nome`);
+  ADD PRIMARY KEY (`utente`,`nome`,`gruppo`),
+  ADD KEY `squadre_ibfk_1` (`utente`,`gruppo`);
 
 --
 -- Indici per le tabelle `users`
@@ -142,10 +172,16 @@ ALTER TABLE `competizioni`
   ADD CONSTRAINT `competizioni_ibfk_1` FOREIGN KEY (`utente`) REFERENCES `squadre` (`utente`);
 
 --
+-- Limiti per la tabella `gruppi`
+--
+ALTER TABLE `gruppi`
+  ADD CONSTRAINT `gruppi_ibfk_1` FOREIGN KEY (`utente`) REFERENCES `users` (`username`);
+
+--
 -- Limiti per la tabella `squadre`
 --
 ALTER TABLE `squadre`
-  ADD CONSTRAINT `squadre_ibfk_1` FOREIGN KEY (`utente`) REFERENCES `users` (`username`);
+  ADD CONSTRAINT `squadre_ibfk_1` FOREIGN KEY (`utente`,`gruppo`) REFERENCES `gruppi` (`utente`, `nome`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

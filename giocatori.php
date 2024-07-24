@@ -7,7 +7,7 @@ $error_message = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     // Ricevi i dati dal modulo
     $user = $_SESSION['username'];
-    $nome = ucfirst(strtolower(trim($_POST['nome'])));;
+    $nome = ucwords(strtolower(trim($_POST['nome'])));;
     $forza = $_POST['forza'];
     $colore_primario = $_POST['colore_primario'];
     $colore_secondario = $_POST['colore_secondario'];
@@ -55,7 +55,7 @@ if ($stmt_squadre === false) {
 $i = 1;
 
 // Recupera i gruppi dell'utente corrente per popolare il campo select
-$query_gruppi = "SELECT nome FROM gruppi WHERE utente = ? ORDER BY nome";
+$query_gruppi = "SELECT nome FROM gruppi WHERE utente = ? ORDER BY nome asc";
 $stmt_gruppi = $conn->prepare($query_gruppi);
 $stmt_gruppi->bind_param("s", $user);
 $stmt_gruppi->execute();

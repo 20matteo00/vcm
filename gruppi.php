@@ -7,7 +7,7 @@ $user = $_SESSION['username'];
 
 // Verifica se il modulo è stato inviato per l'aggiunta di un nuovo gruppo
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-    $nome_gruppo = ucfirst(strtolower(trim($_POST['nome_gruppo'])));
+    $nome_gruppo = ucwords(strtolower(trim($_POST['nome_gruppo'])));
     $colore_primario = $_POST['colore_primario'];
     $colore_secondario = $_POST['colore_secondario'];
 
