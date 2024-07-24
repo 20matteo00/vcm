@@ -26,7 +26,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $par = 0;
         $squadrexgironi = 0;
         $partitexgiornata = 0;
-        $j=0;
+        $j = 0;
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -55,7 +55,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $sections = ["Fase a gironi", "Ottavi", "Quarti", "Semifinali", "Finale"];
         $squadrexgironi = $numberOfTeams / $gironi;
         $partitexgiornata = $gironi * ($numberOfTeams / 2);
-        $j=0;
+        $j = 0;
         if ($ar == 1) {
             $totpartite = $giornate * $partecipanti / 2;
         } else {
@@ -157,7 +157,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                 $round = 0;
 
                 for ($i = $par; $i < count($sec); $i++) {
-                    echo "<div class='col-6 text-center p-3'>";
+                    echo "<div id='giornata" . ($round + 1) . "' class='col-6 text-center p-3'>";
                     echo "<form action='#' method='POST'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
@@ -195,7 +195,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                             echo "<input type ='hidden' name='round' value='" . ($j + 1) . "'>";
                             echo "<input type='hidden' name='sec' value='" . $sec[$i] . "'>";
-                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
+                            echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[0][$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
@@ -264,7 +264,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 
                 // Per ogni giornata, visualizza tutte le partite
                 for ($round = 0; $round <= $maxRound; $round++) {
-                    echo "<div class='col-6 text-center p-3'>";
+                    echo "<div id='giornata" . ($round + 1) . "' class='col-6 text-center p-3'>";
                     echo "<form action='#' method='POST'>";
                     echo "<div class='card shadow-sm miacard'>";
                     echo "<div class='card-header partecipants miacardbody'>";
@@ -273,7 +273,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo "<div class='card-body miacardbody'>";
                     $pg = 1;
                     $c = 0;
-
+                    $newscheduler = [];
                     // Trova e visualizza tutte le partite per questa giornata
                     foreach ($scheduler as $groupName => $groupSchedule) {
                         if (isset($groupSchedule[$round])) {
@@ -303,14 +303,14 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 $stmt2->close();
                                 $stmt3->close();
 
+                                $newscheduler[$round][] = $match;
                                 // Determina i campi di punteggio
                                 $gol = isset($row3['gol1']) && isset($row3['gol2']) ?
                                     "<input type='number' name='gol1" . $match[0] . "' min='0' value=" . $row3['gol1'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . " > - <input type='number' name='gol2" . $match[1] . "' min='0' value=" . $row3['gol2'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">" :
                                     "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                                 echo "<input type='hidden' name='round' value='" . ($round + 1) . "'>";
-                                echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler)) . "'>";
+                                echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($newscheduler[$round])) . "'>";
                                 echo "<input type='hidden' name='pg' value='" . $pg . "'>";
-
                                 echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                                 echo "<div class='d-flex align-items-center'>";
                                 echo "<span style='border: 1px solid black; background-color: var(--secondarycolor); color: var(--primarycolor); padding: 5px 10px; margin-right:10px; '>" . $pg . "</span>";
@@ -330,7 +330,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 $c++;
                             }
                         }
+
                     }
+
                     echo "</div>";
 
 
@@ -359,12 +361,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['save'])) {
 
 
-        foreach ($scheduler as $index => $match) {
 
+
+
+        foreach ($scheduler as $index => $match) {
             $squadra1 = $match[0];
             $squadra2 = $match[1];
-            $gol1 = $_POST['gol1' . $match[0]];
-            $gol2 = $_POST['gol2' . $match[1]];
+            $gol1 = $_POST['gol1' . $squadra1];
+            $gol2 = $_POST['gol2' . $squadra2];
             if (isset($_POST['pg'])) {
                 $pg = $_POST['pg'];
             } else {
@@ -379,9 +383,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_save->execute();
             $stmt_save->close();
         }
+
+
+
+
     } elseif (isset($_POST['delete'])) {
         // Delete logic
-        if ($mod == "campionato" || $mod=="champions") {
+        if ($mod == "campionato" || $mod == "champions") {
             $sql_delete = "UPDATE {$tablepartite} SET gol1 = NULL, gol2 = NULL WHERE utente = ? AND nome = ? AND giornata = ?";
             $stmt_delete = $conn->prepare($sql_delete);
             $stmt_delete->bind_param("ssi", $user, $name, $round);
@@ -396,8 +404,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_delete->close();
         }
     }
-    var_dump($round);
-
     header("Location: index.php?page=visualizza&name={$name}&mod={$mod}&tabpar={$tablepartite}&tabstat={$tablestatistiche}#giornata{$round}");
     exit();
 }
@@ -531,21 +537,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 } else {
                     $pari = true;
                 }
-            }/*
-           for ($k = 0; $k < count($giornata); $k += 2) {
-               if ($ar == 1) {
-                   if (!is_numeric($gol1[$k]) || !is_numeric($gol1[$k + 1]) || !is_numeric($gol2[$k]) || !is_numeric($gol2[$k + 1])) {
-                       $winners = [];
-                       break; // Exit the loop if there's a tie
-                   }
-               } else {
-                   if (!is_numeric($gol1[$k]) || !is_numeric($gol2[$k])) {
-                       
-                       $winners = [];
-                       break; // Exit the loop if there's a tie
-                   }
-               }
-           }*/
+            }
             if ($ar == 1) {
                 $ggg = false;
                 $sql = "SELECT * FROM $tablepartite WHERE utente=? AND nome=? AND giornata=?";
