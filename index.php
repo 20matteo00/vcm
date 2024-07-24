@@ -6,11 +6,11 @@
 </head>
 
 <body>
-    <?php 
+    <?php
     ob_start();
-    include "conn.php"; 
-    session_start(); 
-    
+    include "conn.php";
+    session_start();
+
     // Impostazione della lingua
     if (isset($_SESSION['lang'])) {
         if ($_SESSION['lang'] === 'it') {
@@ -46,6 +46,8 @@
             <?php include "competizioni/tabellone.php"; ?>
         <?php elseif ($page == "statistiche"): ?>
             <?php include "competizioni/statistiche.php"; ?>
+        <?php elseif ($page == "fasefinale"): ?>
+            <?php include "competizioni/fasefinale.php"; ?>
         <?php else: ?>
             <?php include "home.php"; ?>
         <?php endif; ?>
