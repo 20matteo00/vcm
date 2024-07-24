@@ -18,6 +18,7 @@ a{
 th, td{
     color: var(--secondarycolor) !important;
     min-width: 50px;
+    vertical-align: middle;
 }
 
 
