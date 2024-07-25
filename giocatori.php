@@ -11,14 +11,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $forza = $_POST['forza'];
     $colore_primario = $_POST['colore_primario'];
     $colore_secondario = $_POST['colore_secondario'];
+    $gruppo = $_POST['gruppo'];
 
     // Esegui una query per inserire la squadra nel database
-    $query = "INSERT INTO squadre (utente, nome, forza, colore1, colore2) VALUES (?, ?, ?, ?, ?)";
+    $query = "INSERT INTO squadre (utente, nome, forza, gruppo, colore1, colore2) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         $error_message = $VCM_error3 . $conn->error;
     } else {
-        $stmt->bind_param("ssiss", $user, $nome, $forza, $colore_primario, $colore_secondario);
+        $stmt->bind_param("ssisss", $user, $nome, $forza, $gruppo, $colore_primario, $colore_secondario);
         try {
             if ($stmt->execute()) {
                 // Squadra aggiunta con successo

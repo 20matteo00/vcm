@@ -58,8 +58,8 @@ CREATE TABLE `gruppi` (
 
 INSERT INTO `gruppi` (`utente`, `nome`, `colore1`, `colore2`) VALUES
 ('a', '0', '#000000', '#ffffff'),
-('a', 'Serie a', '#0000ff', '#ffffff'),
-('a', 'Serie b', '#008000', '#ffffff');
+('a', 'Serie A', '#0000ff', '#ffffff'),
+('a', 'Serie B', '#008000', '#ffffff');
 
 -- --------------------------------------------------------
 
@@ -81,38 +81,38 @@ CREATE TABLE `squadre` (
 --
 
 INSERT INTO `squadre` (`utente`, `nome`, `forza`, `gruppo`, `colore1`, `colore2`) VALUES
-('a', 'Atalanta', 436, 'Serie a', '#0080ff', '#000000'),
-('a', 'Bologna', 277, 'Serie a', '#ff0000', '#0000a0'),
-('a', 'Brescia', 19, 'Serie b', '#ffffff', '#0000ff'),
-('a', 'Cagliari', 71, 'Serie a', '#ff2020', '#0000a0'),
-('a', 'Cesena', 13, 'Serie b', '#ffffff', '#000000'),
-('a', 'Como', 61, 'Serie a', '#ffffff', '#0000a0'),
-('a', 'Cosenza', 13, 'Serie b', '#ff0000', '#000040'),
-('a', 'Cremonese', 37, 'Serie b', '#df0000', '#cda432'),
-('a', 'Empoli', 39, 'Serie a', '#0000ff', '#ffffff'),
-('a', 'Fiorentina', 234, 'Serie a', '#8000ff', '#ff0080'),
-('a', 'Frosinone', 28, 'Serie b', '#ffff00', '#0000ff'),
-('a', 'Genoa', 987, 'Serie a', '#ff0000', '#0000ff'),
-('a', 'Inter', 713, 'Serie a', '#0080ff', '#000000'),
-('a', 'Juventus', 566, 'Serie a', '#000000', '0'),
-('a', 'Lazio', 228, 'Serie a', '#ffffff', '#80ffff'),
-('a', 'Lecce', 96, 'Serie a', '#408080', '#ffff80'),
-('a', 'Milan', 565, 'Serie a', '#ff0000', '#000000'),
-('a', 'Modena', 18, 'Serie b', '#ffff80', '#0000a0'),
-('a', 'Monza', 95, 'Serie a', '#ff0000', '#ffffff'),
-('a', 'Napoli', 495, 'Serie a', '#ffffff', '#80ffff'),
-('a', 'Palermo', 40, 'Serie b', '#ff80ff', '#000000'),
-('a', 'Parma', 86, 'Serie a', '#cda434', '#000000'),
-('a', 'Pisa', 28, 'Serie b', '#1414ff', '#ffffff'),
-('a', 'Roma', 276, 'Serie a', '#ffb000', '#ff0000'),
-('a', 'Salernitana', 57, 'Serie b', '#800000', '#ffffff'),
-('a', 'Sampdoria', 33, 'Serie b', '#0000ff', '#ffffff'),
-('a', 'Sassuolo', 120, 'Serie b', '#008000', '#000000'),
-('a', 'Spezia', 26, 'Serie b', '#ffffff', '#000000'),
-('a', 'Torino', 157, 'Serie a', '#800000', '#ffffff'),
-('a', 'Udinese', 149, 'Serie a', '#808080', '#ffffff'),
-('a', 'Venezia', 47, 'Serie a', '#008000', '#ff8040'),
-('a', 'Verona', 62, 'Serie a', '#0000a0', '#ffff00');
+('a', 'Atalanta', 436, 'Serie A', '#0080ff', '#000000'),
+('a', 'Bologna', 277, 'Serie A', '#ff0000', '#0000a0'),
+('a', 'Brescia', 19, 'Serie B', '#ffffff', '#0000ff'),
+('a', 'Cagliari', 71, 'Serie A', '#ff2020', '#0000a0'),
+('a', 'Cesena', 13, 'Serie B', '#ffffff', '#000000'),
+('a', 'Como', 61, 'Serie A', '#ffffff', '#0000a0'),
+('a', 'Cosenza', 13, 'Serie B', '#ff0000', '#000040'),
+('a', 'Cremonese', 37, 'Serie B', '#df0000', '#cda432'),
+('a', 'Empoli', 39, 'Serie A', '#0000ff', '#ffffff'),
+('a', 'Fiorentina', 234, 'Serie A', '#8000ff', '#ff0080'),
+('a', 'Frosinone', 28, 'Serie B', '#ffff00', '#0000ff'),
+('a', 'Genoa', 987, 'Serie A', '#ff0000', '#0000ff'),
+('a', 'Inter', 713, 'Serie A', '#0080ff', '#000000'),
+('a', 'Juventus', 566, 'Serie A', '#000000', '0'),
+('a', 'Lazio', 228, 'Serie A', '#ffffff', '#80ffff'),
+('a', 'Lecce', 96, 'Serie A', '#408080', '#ffff80'),
+('a', 'Milan', 565, 'Serie A', '#ff0000', '#000000'),
+('a', 'Modena', 18, 'Serie B', '#ffff80', '#0000a0'),
+('a', 'Monza', 95, 'Serie A', '#ff0000', '#ffffff'),
+('a', 'Napoli', 495, 'Serie A', '#ffffff', '#80ffff'),
+('a', 'Palermo', 40, 'Serie B', '#ff80ff', '#000000'),
+('a', 'Parma', 86, 'Serie A', '#cda434', '#000000'),
+('a', 'Pisa', 28, 'Serie B', '#1414ff', '#ffffff'),
+('a', 'Roma', 276, 'Serie A', '#ffb000', '#ff0000'),
+('a', 'Salernitana', 57, 'Serie B', '#800000', '#ffffff'),
+('a', 'Sampdoria', 33, 'Serie B', '#0000ff', '#ffffff'),
+('a', 'Sassuolo', 120, 'Serie B', '#008000', '#000000'),
+('a', 'Spezia', 26, 'Serie B', '#ffffff', '#000000'),
+('a', 'Torino', 157, 'Serie A', '#800000', '#ffffff'),
+('a', 'Udinese', 149, 'Serie A', '#808080', '#ffffff'),
+('a', 'Venezia', 47, 'Serie A', '#008000', '#ff8040'),
+('a', 'Verona', 62, 'Serie A', '#0000a0', '#ffff00');
 
 -- --------------------------------------------------------
 
