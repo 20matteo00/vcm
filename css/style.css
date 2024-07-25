@@ -66,6 +66,9 @@ th, td{
 .miatable th{
     cursor: pointer;
 }
+.miocolore {
+    border: 1px solid black;
+}
 
 /*Visualizza*/
 .miacard{

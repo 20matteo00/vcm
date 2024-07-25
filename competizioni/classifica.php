@@ -122,7 +122,13 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $stmt_statistiche->close();
     }
 
+    if(isset($_GET['calcola']) && $_GET['calcola']=='calcola'){
+        $totpar = $_GET['totpar'];
 
+        header("location: index.php?page=fasefinale&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpar&ar=$ar");
+        exit(); 
+
+    }
 }
 
 ?>

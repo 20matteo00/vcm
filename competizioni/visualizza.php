@@ -5,7 +5,6 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $mod = $_GET['mod'];
     $tablepartite = $_GET['tabpar'];
     $tablestatistiche = $_GET['tabstat'];
-
     $sql = "SELECT * FROM competizioni WHERE utente=? AND nome=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $user, $name);
@@ -153,6 +152,25 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                         echo "</div>";
                     }
                 }
+                // Query per contare le partite e controllare i risultati
+                $sql = "SELECT COUNT(*) AS total_matches, 
+                COUNT(CASE WHEN gol1 IS NOT NULL AND gol2 IS NOT NULL THEN 1 END) AS non_null_results 
+                FROM $tablepartite 
+                WHERE utente = ? AND nome = ?";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ss", $user, $name);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
+
+                $totalMatches = $row['total_matches'];
+                $nonNullResults = $row['non_null_results'];
+                if ($nonNullResults == $totpartite) {
+                    echo "<div class='alert alert-success'>Tutte le partite del campionato sono state giocate, Chiudi la competizione </div>
+                    <a href='index.php?page=classifica&calcola=calcola&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpartite' class='btn btn-success my-2'>Chiudi</a>
+                    ";
+                }
             } elseif ($mod == "eliminazione") {
                 $round = 0;
                 $parr = $par + 1;
@@ -247,6 +265,25 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo "</div>";
                     echo "</div>";
                     echo "</div>";
+                }
+                // Query per contare le partite e controllare i risultati
+                $sql = "SELECT COUNT(*) AS total_matches, 
+                COUNT(CASE WHEN gol1 IS NOT NULL AND gol2 IS NOT NULL THEN 1 END) AS non_null_results 
+                FROM $tablepartite 
+                WHERE utente = ? AND nome = ?";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ss", $user, $name);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
+
+                $totalMatches = $row['total_matches'];
+                $nonNullResults = $row['non_null_results'];
+                if ($nonNullResults == $totpartite) {
+                    echo "<div class='alert alert-success'>Tutte le partite della coppa sono state giocate, Chiudi la competizione </div>
+                    <a href='index.php?page=classifica&calcola=calcola&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpartite' class='btn btn-success my-2'>Chiudi</a>
+                    ";
                 }
             } elseif ($mod == "champions") {
                 // Trova il numero massimo di giornate
@@ -357,9 +394,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 
                 $totalMatches = $row['total_matches'];
                 $nonNullResults = $row['non_null_results'];
+
                 if ($nonNullResults == $totpartite) {
+
                     echo "<div class='alert alert-success'>Tutte le partite della fase a gironi sono state giocate, Passa alla fase finale </div>
-                    <a href='index.php?page=fasefinale&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpartite&ar=$ar' class='btn btn-success my-2'>Fase Finale</a>
+                    <a href='index.php?page=classifica&calcola=calcola&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpartite' class='btn btn-success my-2'>Chiudi</a>
                     ";
                 }
             }
