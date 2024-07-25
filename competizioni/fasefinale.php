@@ -83,6 +83,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $gironi = 0;
     $fasefinale = 0;
     $giocatoriSelezionati = $squadrepassate;
+    $finita=0;
     // Ordina l'array in modo casuale
     shuffle($giocatoriSelezionati);
 
@@ -94,9 +95,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $giocatoriSelezionatiStringa = implode(",", $giocatoriSelezionati);
 
     // Prepara la query SQL per inserire i dati nella tabella competizioni
-    $sql_insert = "INSERT INTO competizioni (utente, nome, modalita, gironi, ar, partecipanti, fasefinale, squadre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql_insert = "INSERT INTO competizioni (utente, nome, modalita, gironi, ar, partecipanti, fasefinale, finita, squadre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("sssiiiis", $user, $nomeCampionato, $moda, $gironi, $ar, $numeroPartecipanti, $fasefinale, $giocatoriSelezionatiStringa);
+    $stmt_insert->bind_param("sssiiiiis", $user, $nomeCampionato, $moda, $gironi, $ar, $numeroPartecipanti, $fasefinale, $finita, $giocatoriSelezionatiStringa);
 
     // Esegui la query e controlla il risultato
     if ($stmt_insert->execute()) {

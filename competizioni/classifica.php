@@ -8,6 +8,13 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     if (isset($_GET['type']))
         $type = $_GET['type'];
 
+    $sql = "SELECT * FROM competizioni WHERE utente = ? AND nome = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $user, $name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $ar = $row['ar'];
     // Ottieni tutte le partite per l'utente
     $sql = "SELECT * FROM " . $tablepartite . " WHERE utente=? AND nome=?";
     $stmt = $conn->prepare($sql);
@@ -218,7 +225,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                     if ($mod == "champions") {
 
                                         echo "<td>{$girone}</td>";
-                                    }                                    
+                                    }
                                     echo "<td>{$squadra}</td>";
                                     echo "<td>{$punti}</td>";
                                     echo "<td>{$giocate}</td>";
@@ -261,16 +268,33 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 $squadre[] = $row['squadra'];
                             }
                             $stmt->close();
+                            $stopgiornata = 0;
+                            $sql = "SELECT COUNT(DISTINCT giornata) as cont FROM {$tablepartite} WHERE utente = ? AND nome = ? ORDER BY giornata";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("ss", $user, $name);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+                            $row = $result->fetch_assoc();
+                            $cont = $row['cont'];
 
+                            if ($ar == 0) {
+                                $stopgiornata = $cont / 2;
+                            }
                             echo "<thead><tr><th>Squadre</th>";
                             $sql = "SELECT DISTINCT giornata FROM {$tablepartite} WHERE utente = ? AND nome = ? order BY giornata";
                             $stmt = $conn->prepare($sql);
                             $stmt->bind_param("ss", $user, $name);
                             $stmt->execute();
                             $result = $stmt->get_result();
+                            $k = 0;
                             while ($row = $result->fetch_assoc()) {
                                 echo "<th>{$row['giornata']}</th>";
+                                $k++;
+                                if ($k == $stopgiornata)
+                                    break;
+
                             }
+
                             echo "</tr></thead><tbody>";
                             foreach ($squadre as $squadra) {
                                 $conteggio = 0;
@@ -307,8 +331,12 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                             echo "<td>" . $conteggio . "</td>";
                                         }
                                     }
-
+                                    $gg = $row['giornata'];
+                                    if ($gg == $stopgiornata) {
+                                        break;
+                                    }
                                 }
+
                                 echo "</tr>";
                                 $stmt->close();
                             }
@@ -527,115 +555,116 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                         $gironi = $row['gironi'];
                         for ($i = 1; $i <= $gironi; $i++) {
                             ?>
-                            <table class="table table-striped table-bordered text-center miatable my-5 tablegironi" id="myTable<?php echo $i ?>">
+                            <table class="table table-striped table-bordered text-center miatable my-5 tablegironi"
+                                id="myTable<?php echo $i ?>">
                                 <p class="fw-bold text-center">Girone <?php echo $i ?></p>
-                            <thead class='mb-5'>
-                                <tr class="fw-bold">
-                                    <td colspan='2'>Classifica</td>
-                                    <td colspan="8">Totale</td>
-                                    <td colspan="8">Casa</td>
-                                    <td colspan="8">Trasferta</td>
-                                </tr>
-                                <tr>
-                                    <th id="sortById">#</th>
-                                    <th id="sortByName">Squadre</th>
-                                    <th id="sortByTotalPoints">Pt</th>
-                                    <th id="sortByTotalGames">G</th>
-                                    <th id="sortByTotalVictories">V</th>
-                                    <th id="sortByTotalDraws">N</th>
-                                    <th id="sortByTotalLosses">P</th>
-                                    <th id="sortByTotalGoalsFor">GF</th>
-                                    <th id="sortByTotalGoalsAgainst">GS</th>
-                                    <th id="sortByTotalGoalDifference">DR</th>
-                                    <th id="sortByTotalPointsHome">Pt</th>
-                                    <th id="sortByTotalGamesHome">G</th>
-                                    <th id="sortByTotalVictoriesHome">V</th>
-                                    <th id="sortByTotalDrawsHome">N</th>
-                                    <th id="sortByTotalLossesHome">P</th>
-                                    <th id="sortByTotalGoalsForHome">GF</th>
-                                    <th id="sortByTotalGoalsAgainstHome">GS</th>
-                                    <th id="sortByTotalGoalDifferenceHome">DR</th>
-                                    <th id="sortByTotalPointsAway">Pt</th>
-                                    <th id="sortByTotalGamesAway">G</th>
-                                    <th id="sortByTotalVictoriesAway">V</th>
-                                    <th id="sortByTotalDrawsAway">N</th>
-                                    <th id="sortByTotalLossesAway">P</th>
-                                    <th id="sortByTotalGoalsForAway">GF</th>
-                                    <th id="sortByTotalGoalsAgainstAway">GS</th>
-                                    <th id="sortByTotalGoalDifferenceAway">DR</th>
-                                </tr>
-                            </thead>
-                            <?php
-                            echo "<tbody class='mb-5'>";
-                            $sql = "SELECT * FROM $tablestatistiche WHERE utente=? AND nome=? and girone = ? ORDER BY squadra";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("ssi", $user, $name, $i);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-                            $rank = 1;
-                            while ($row = $result->fetch_assoc()) {
-                                $squadra = $row['squadra'];
+                                <thead class='mb-5'>
+                                    <tr class="fw-bold">
+                                        <td colspan='2'>Classifica</td>
+                                        <td colspan="8">Totale</td>
+                                        <td colspan="8">Casa</td>
+                                        <td colspan="8">Trasferta</td>
+                                    </tr>
+                                    <tr>
+                                        <th id="sortById">#</th>
+                                        <th id="sortByName">Squadre</th>
+                                        <th id="sortByTotalPoints">Pt</th>
+                                        <th id="sortByTotalGames">G</th>
+                                        <th id="sortByTotalVictories">V</th>
+                                        <th id="sortByTotalDraws">N</th>
+                                        <th id="sortByTotalLosses">P</th>
+                                        <th id="sortByTotalGoalsFor">GF</th>
+                                        <th id="sortByTotalGoalsAgainst">GS</th>
+                                        <th id="sortByTotalGoalDifference">DR</th>
+                                        <th id="sortByTotalPointsHome">Pt</th>
+                                        <th id="sortByTotalGamesHome">G</th>
+                                        <th id="sortByTotalVictoriesHome">V</th>
+                                        <th id="sortByTotalDrawsHome">N</th>
+                                        <th id="sortByTotalLossesHome">P</th>
+                                        <th id="sortByTotalGoalsForHome">GF</th>
+                                        <th id="sortByTotalGoalsAgainstHome">GS</th>
+                                        <th id="sortByTotalGoalDifferenceHome">DR</th>
+                                        <th id="sortByTotalPointsAway">Pt</th>
+                                        <th id="sortByTotalGamesAway">G</th>
+                                        <th id="sortByTotalVictoriesAway">V</th>
+                                        <th id="sortByTotalDrawsAway">N</th>
+                                        <th id="sortByTotalLossesAway">P</th>
+                                        <th id="sortByTotalGoalsForAway">GF</th>
+                                        <th id="sortByTotalGoalsAgainstAway">GS</th>
+                                        <th id="sortByTotalGoalDifferenceAway">DR</th>
+                                    </tr>
+                                </thead>
+                                <?php
+                                echo "<tbody class='mb-5'>";
+                                $sql = "SELECT * FROM $tablestatistiche WHERE utente=? AND nome=? and girone = ? ORDER BY squadra";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("ssi", $user, $name, $i);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+                                $rank = 1;
+                                while ($row = $result->fetch_assoc()) {
+                                    $squadra = $row['squadra'];
 
-                                $vinte_casa = $row['vinte_casa'];
-                                $pari_casa = $row['pari_casa'];
-                                $perse_casa = $row['perse_casa'];
-                                $fatti_casa = $row['fatti_casa'];
-                                $subiti_casa = $row['subiti_casa'];
-                                $giocate_casa = $vinte_casa + $pari_casa + $perse_casa;
-                                $punti_casa = $vinte_casa * 3 + $pari_casa;
-                                $differenza_casa = $fatti_casa - $subiti_casa;
+                                    $vinte_casa = $row['vinte_casa'];
+                                    $pari_casa = $row['pari_casa'];
+                                    $perse_casa = $row['perse_casa'];
+                                    $fatti_casa = $row['fatti_casa'];
+                                    $subiti_casa = $row['subiti_casa'];
+                                    $giocate_casa = $vinte_casa + $pari_casa + $perse_casa;
+                                    $punti_casa = $vinte_casa * 3 + $pari_casa;
+                                    $differenza_casa = $fatti_casa - $subiti_casa;
 
-                                $vinte_trasferta = $row['vinte_trasferta'];
-                                $pari_trasferta = $row['pari_trasferta'];
-                                $perse_trasferta = $row['perse_trasferta'];
-                                $fatti_trasferta = $row['fatti_trasferta'];
-                                $subiti_trasferta = $row['subiti_trasferta'];
-                                $giocate_trasferta = $vinte_trasferta + $pari_trasferta + $perse_trasferta;
-                                $punti_trasferta = $vinte_trasferta * 3 + $pari_trasferta;
-                                $differenza_trasferta = $fatti_trasferta - $subiti_trasferta;
+                                    $vinte_trasferta = $row['vinte_trasferta'];
+                                    $pari_trasferta = $row['pari_trasferta'];
+                                    $perse_trasferta = $row['perse_trasferta'];
+                                    $fatti_trasferta = $row['fatti_trasferta'];
+                                    $subiti_trasferta = $row['subiti_trasferta'];
+                                    $giocate_trasferta = $vinte_trasferta + $pari_trasferta + $perse_trasferta;
+                                    $punti_trasferta = $vinte_trasferta * 3 + $pari_trasferta;
+                                    $differenza_trasferta = $fatti_trasferta - $subiti_trasferta;
 
-                                $vinte = $vinte_casa + $vinte_trasferta;
-                                $pari = $pari_casa + $pari_trasferta;
-                                $perse = $perse_casa + $perse_trasferta;
-                                $fatti = $fatti_casa + $fatti_trasferta;
-                                $subiti = $subiti_casa + $subiti_trasferta;
-                                $giocate = $giocate_casa + $giocate_trasferta;
-                                $punti = $punti_casa + $punti_trasferta;
-                                $differenza = $differenza_casa + $differenza_trasferta;
+                                    $vinte = $vinte_casa + $vinte_trasferta;
+                                    $pari = $pari_casa + $pari_trasferta;
+                                    $perse = $perse_casa + $perse_trasferta;
+                                    $fatti = $fatti_casa + $fatti_trasferta;
+                                    $subiti = $subiti_casa + $subiti_trasferta;
+                                    $giocate = $giocate_casa + $giocate_trasferta;
+                                    $punti = $punti_casa + $punti_trasferta;
+                                    $differenza = $differenza_casa + $differenza_trasferta;
 
-                                $girone = $row['girone'];
+                                    $girone = $row['girone'];
 
-                                echo "<tr>";
-                                echo "<td>{$rank}</td>";
-                                echo "<td>{$squadra}</td>";
-                                echo "<td>{$punti}</td>";
-                                echo "<td>{$giocate}</td>";
-                                echo "<td>{$vinte}</td>";
-                                echo "<td>{$pari}</td>";
-                                echo "<td>{$perse}</td>";
-                                echo "<td>{$fatti}</td>";
-                                echo "<td>{$subiti}</td>";
-                                echo "<td>{$differenza}</td>";
-                                echo "<td>{$punti_casa}</td>";
-                                echo "<td>{$giocate_casa}</td>";
-                                echo "<td>{$vinte_casa}</td>";
-                                echo "<td>{$pari_casa}</td>";
-                                echo "<td>{$perse_casa}</td>";
-                                echo "<td>{$fatti_casa}</td>";
-                                echo "<td>{$subiti_casa}</td>";
-                                echo "<td>{$differenza_casa}</td>";
-                                echo "<td>{$punti_trasferta}</td>";
-                                echo "<td>{$giocate_trasferta}</td>";
-                                echo "<td>{$vinte_trasferta}</td>";
-                                echo "<td>{$pari_trasferta}</td>";
-                                echo "<td>{$perse_trasferta}</td>";
-                                echo "<td>{$fatti_trasferta}</td>";
-                                echo "<td>{$subiti_trasferta}</td>";
-                                echo "<td>{$differenza_trasferta}</td>";
-                                echo "</tr>";
-                                $rank++;
-                            }
-                            echo "</tbody></table>";
+                                    echo "<tr>";
+                                    echo "<td>{$rank}</td>";
+                                    echo "<td>{$squadra}</td>";
+                                    echo "<td>{$punti}</td>";
+                                    echo "<td>{$giocate}</td>";
+                                    echo "<td>{$vinte}</td>";
+                                    echo "<td>{$pari}</td>";
+                                    echo "<td>{$perse}</td>";
+                                    echo "<td>{$fatti}</td>";
+                                    echo "<td>{$subiti}</td>";
+                                    echo "<td>{$differenza}</td>";
+                                    echo "<td>{$punti_casa}</td>";
+                                    echo "<td>{$giocate_casa}</td>";
+                                    echo "<td>{$vinte_casa}</td>";
+                                    echo "<td>{$pari_casa}</td>";
+                                    echo "<td>{$perse_casa}</td>";
+                                    echo "<td>{$fatti_casa}</td>";
+                                    echo "<td>{$subiti_casa}</td>";
+                                    echo "<td>{$differenza_casa}</td>";
+                                    echo "<td>{$punti_trasferta}</td>";
+                                    echo "<td>{$giocate_trasferta}</td>";
+                                    echo "<td>{$vinte_trasferta}</td>";
+                                    echo "<td>{$pari_trasferta}</td>";
+                                    echo "<td>{$perse_trasferta}</td>";
+                                    echo "<td>{$fatti_trasferta}</td>";
+                                    echo "<td>{$subiti_trasferta}</td>";
+                                    echo "<td>{$differenza_trasferta}</td>";
+                                    echo "</tr>";
+                                    $rank++;
+                                }
+                                echo "</tbody></table>";
                         }
                     }
                     ?>
