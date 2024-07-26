@@ -130,9 +130,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                             echo "<div class='d-flex align-items-center'>";
-                            echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
+                            echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[0] . "</span>";
                             echo "<span class='vs' style='margin: 0 10px;'>VS</span>";
-                            echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[1] . "</span>";
+                            echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[1] . "</span>";
                             echo "</div>";
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='vs' style='margin: 0 10px;'>" . $gol . "</span>";
@@ -217,9 +217,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                             echo "<div class='d-flex align-items-center'>";
-                            echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
+                            echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[0] . "</span>";
                             echo "<span class='vs' style='margin: 0 10px;'>VS</span>";
-                            echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[1] . "</span>";
+                            echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[1] . "</span>";
                             echo "</div>";
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='vs' style='margin: 0 10px;'>" . $gol . "</span>";
@@ -258,9 +258,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                     echo "</div>";
                     echo "<div class='card-body miacardbody'>";
                     if ($row["gol1"] > $row["gol2"]) {
-                        echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra1"] . "</span>";
+                        echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $row["squadra1"] . "</span>";
                     } elseif (($row["gol1"] < $row["gol2"])) {
-                        echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $row["squadra2"] . "</span>";
+                        echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $row["squadra2"] . "</span>";
                     }
                     echo "</div>";
                     echo "</div>";
@@ -348,9 +348,9 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
                                 echo "<div class='d-flex align-items-center'>";
                                 echo "<span style='border: 1px solid black; background-color: var(--secondarycolor); color: var(--primarycolor); padding: 5px 10px; margin-right:10px; '>" . $pg . "</span>";
-                                echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[0] . "</span>";
+                                echo "<span class='team' style='border: 1px solid black; color: " . $row1['colore2'] . "; background-color: " . $row1['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[0] . "</span>";
                                 echo "<span class='vs' style='margin: 0 10px;'>VS</span>";
-                                echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 120px; text-align: center;'>" . $match[1] . "</span>";
+                                echo "<span class='team' style='border: 1px solid black; color: " . $row2['colore2'] . "; background-color: " . $row2['colore1'] . "; padding: 5px 10px; width: 150px; text-align: center;'>" . $match[1] . "</span>";
                                 echo "</div>";
                                 echo "<div class='d-flex align-items-center'>";
                                 echo "<span class='vs' style='margin: 0 10px;'>" . $gol . "</span>";
