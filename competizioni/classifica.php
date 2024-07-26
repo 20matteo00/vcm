@@ -122,11 +122,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
         $stmt_statistiche->close();
     }
 
-    if(isset($_GET['calcola']) && $_GET['calcola']=='calcola'){
+    if (isset($_GET['calcola']) && $_GET['calcola'] == 'calcola') {
         $totpar = $_GET['totpar'];
 
         header("location: index.php?page=fasefinale&name=$name&mod=$mod&tabpar=$tablepartite&tabstat=$tablestatistiche&totpar=$totpar&ar=$ar");
-        exit(); 
+        exit();
 
     }
 }
@@ -188,7 +188,14 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                $sql = "SELECT * FROM $tablestatistiche WHERE utente=? AND nome=?";
+                                /* $sql = "SELECT * FROM $tablestatistiche WHERE utente=? AND nome=?"; */
+                                $sql = "SELECT *, 
+                                            (vinte_casa * 3 + pari_casa + vinte_trasferta * 3 + pari_trasferta) AS punti,
+                                            (fatti_casa - subiti_casa + fatti_trasferta - subiti_trasferta) AS differenza_reti,
+                                            (fatti_casa + fatti_trasferta) AS gol_fatti
+                                        FROM $tablestatistiche
+                                        WHERE utente = ? AND nome = ?
+                                        ORDER BY punti DESC, differenza_reti DESC, gol_fatti DESC, squadra ASC";
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("ss", $user, $name);
                                 $stmt->execute();
@@ -602,7 +609,13 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                                 </thead>
                                 <?php
                                 echo "<tbody class='mb-5'>";
-                                $sql = "SELECT * FROM $tablestatistiche WHERE utente=? AND nome=? and girone = ? ORDER BY squadra";
+                                $sql = "SELECT *, 
+                                            (vinte_casa * 3 + pari_casa + vinte_trasferta * 3 + pari_trasferta) AS punti,
+                                            (fatti_casa - subiti_casa + fatti_trasferta - subiti_trasferta) AS differenza_reti,
+                                            (fatti_casa + fatti_trasferta) AS gol_fatti
+                                        FROM $tablestatistiche
+                                        WHERE utente = ? AND nome = ? AND girone = ?
+                                        ORDER BY punti DESC, differenza_reti DESC, gol_fatti DESC, squadra ASC";
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("ssi", $user, $name, $i);
                                 $stmt->execute();
