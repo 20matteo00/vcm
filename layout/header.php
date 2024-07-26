@@ -31,6 +31,9 @@ $currentUrl = $scheme . '://' . $host . $path;
                     <a class="nav-link active" href="index.php?page=giocatori"><b><?php echo $VCM_players; ?></b></a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link active" href="index.php"><b>Nuova Competizione</b></a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link active" href="index.php?page=competizioni&com=0"><b><?php echo $VCM_comp_in_progress; ?></b></a>
                 </li>
                 <li class="nav-item">
