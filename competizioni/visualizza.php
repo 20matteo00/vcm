@@ -80,10 +80,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $count = $row['count'];
     $stmt->close();
 
-?>
+    ?>
     <div class="container my-5">
         <h1 class="text-center m-5"><?php echo $name ?></h1>
-        <?php include("layout/menu_dettagli.php") ?>
+        <?php include ("layout/menu_dettagli.php") ?>
 
         <div class="row">
             <?php
@@ -406,7 +406,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             ?>
         </div>
     </div>
-<?php
+    <?php
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -416,8 +416,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($scheduler as $index => $match) {
             $squadra1 = $match[0];
             $squadra2 = $match[1];
-            $gol1 = $_POST['gol1' . $squadra1];
-            $gol2 = $_POST['gol2' . $squadra2];
+            $match[0] = str_replace(" ", "_", $match[0]);
+            $match[1] = str_replace(" ", "_", $match[1]);
+            $gol1 = $_POST['gol1' . $match[0]];
+            $gol2 = $_POST['gol2' . $match[1]];
             if (isset($_POST['pg'])) {
                 $pg = $_POST['pg'];
             } else {
@@ -556,7 +558,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $stmt_save->bind_param("ssssi", $user, $name, $home, $away, $j);
                 $stmt_save->execute();
                 $stmt_save->close();
-                
+
             }
             if ($ar == 1) {
                 $schedule[$round + 1] = [];
@@ -566,7 +568,7 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $round++;
                 $j++;
             }
-            if($ar == 0){
+            if ($ar == 0) {
                 $j++;
             }
             $j++;
