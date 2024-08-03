@@ -80,10 +80,10 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $count = $row['count'];
     $stmt->close();
 
-    ?>
+?>
     <div class="container my-5">
         <h1 class="text-center m-5"><?php echo $name ?></h1>
-        <?php include ("layout/menu_dettagli.php") ?>
+        <?php include("layout/menu_dettagli.php") ?>
 
         <div class="row">
             <?php
@@ -406,7 +406,7 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
             ?>
         </div>
     </div>
-    <?php
+<?php
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -494,13 +494,15 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
             }
         }
         // Generate the second round (return matches)
-        for ($round = $numberOfTeams - 1; $round < $rounds; $round++) {
-            $schedule[$round] = [];
-            foreach ($schedule[$round - ($numberOfTeams - 1)] as $match) {
-                $schedule[$round][] = array_reverse($match);
+        // Ritorno se $ar == 1
+        if ($ar == 1) {
+            for ($round = $numberOfTeams - 1; $round < $rounds; $round++) {
+                $schedule[$round] = [];
+                foreach ($schedule[$round - ($numberOfTeams - 1)] as $match) {
+                    $schedule[$round][] = array_reverse($match);
+                }
             }
         }
-
         // Save the matches in the database
         foreach ($schedule as $round => $matches) {
             foreach ($matches as $match) {
@@ -558,7 +560,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
                 $stmt_save->bind_param("ssssi", $user, $name, $home, $away, $j);
                 $stmt_save->execute();
                 $stmt_save->close();
-
             }
             if ($ar == 1) {
                 $schedule[$round + 1] = [];
