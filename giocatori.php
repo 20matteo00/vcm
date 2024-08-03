@@ -154,6 +154,7 @@ $stmt_gruppi->close();
                                     <td><?php echo htmlspecialchars($row['gruppo']); ?></td>
                                     <td>
                                         <a href="index.php?page=azioni&name=modificasquadra&squadra=<?php echo $row['nome']; ?>" class="btn btn-warning"><?php echo $VCM_edit; ?></a>
+                                        <a href="index.php?page=storico&squadra=<?php echo $row['nome']; ?>"  class="btn btn-success">Storico</a>
                                         <a href="index.php?page=azioni&name=eliminasquadra&squadra=<?php echo $row['nome']; ?>" class="btn btn-danger"><?php echo $VCM_delete; ?></a>
                                     </td>
                                 </tr>

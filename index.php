@@ -36,6 +36,8 @@
             <?php include "giocatori.php"; ?>
         <?php elseif ($page == "azioni") : ?>
             <?php include "azioni.php"; ?>
+        <?php elseif ($page == "storico") : ?>
+            <?php include "storico.php"; ?>
         <?php elseif ($page == "modalita") : ?>
             <?php include "modalita.php"; ?>
         <?php elseif ($page == "competizioni") : ?>
