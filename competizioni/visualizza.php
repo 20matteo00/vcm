@@ -81,6 +81,41 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
     $stmt->close();
 
 ?>
+<script>
+function invioPartita(azione, giornata, squadra1, squadra2) {
+    const form = document.createElement('form');
+    // Ottieni i valori degli input direttamente dal DOM
+    const gol1 = document.getElementById('gol1_' + squadra1).value;
+    const gol2 = document.getElementById('gol2_' + squadra2).value;
+    form.method = 'GET';
+    form.action = 'index.php';
+
+    const inputs = [
+        { name: 'page', value: 'azioni' },
+        { name: 'azione', value: azione },
+        { name: 'giornata', value: giornata },
+        { name: 'squadra1', value: squadra1 },
+        { name: 'squadra2', value: squadra2 },
+        { name: 'gol1', value: gol1 },
+        { name: 'gol2', value: gol2 },
+        { name: 'tabpar', value: '<?php echo $tablepartite; ?>' },
+        { name: 'tabstat', value: '<?php echo $tablestatistiche; ?>' },
+        { name: 'name', value: '<?php echo $name; ?>' },
+        { name: 'mod', value: '<?php echo $mod; ?>' }
+    ];
+
+    inputs.forEach(function(inputData) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = inputData.name;
+        input.value = inputData.value;
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
     <div class="container my-5">
         <h1 class="text-center m-5"><?php echo $name ?></h1>
         <?php include("layout/menu_dettagli.php") ?>
@@ -124,8 +159,8 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             $stmt3->close();
 
                             $gol = isset($row3['gol1']) && isset($row3['gol2']) ?
-                                "<input type='number' name='gol1" . $match[0] . "' min='0' value=" . $row3['gol1'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . " > - <input type='number' name='gol2" . $match[1] . "' min='0' value=" . $row3['gol2'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">" :
-                                "<input type='number' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
+                                "<input type='number' id='gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' value=" . $row3['gol1'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . " > - <input type='number' id='gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' value=" . $row3['gol2'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">" :
+                                "<input type='number' id='gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' id='gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                             echo "<input type ='hidden' name='round' value='" . ($round + 1) . "'>";
                             echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
@@ -137,6 +172,11 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
                             echo "<div class='d-flex align-items-center'>";
                             echo "<span class='vs' style='margin: 0 10px;'>" . $gol . "</span>";
                             echo "</div>";
+                            echo "<div class='d-flex align-items-center'>";
+                            echo "<span class='pe-2'><button type='button' class='btn btn-success' onclick='invioPartita(\"salva\", " . ($round + 1) . ", \"" . $match[0] . "\", \"" . $match[1] . "\")'>V</button></span>";
+                            echo "<span class='ps-2'><button type='button' class='btn btn-danger' onclick='invioPartita(\"cancella\", " . ($round + 1) . ", \"" . $match[0] . "\", \"" . $match[1] . "\")'>X</button></span>";
+                            echo "</div>";
+
                             echo "</div>";
                         }
 
@@ -709,7 +749,6 @@ function creagiornate($teams, $numberOfTeams, $rounds, $mod, $ar, $tablepartite,
 
     return $schedule;
 }
-
 
 
 ?>

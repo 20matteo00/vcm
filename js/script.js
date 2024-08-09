@@ -84,7 +84,6 @@ function limitCheckboxes(maxSelections) {
     submitButton.disabled = (checkedCount !== maxSelections);
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
     // Trova tutte le tabelle con ID che iniziano con "myTable"
     const tables = document.querySelectorAll('table[id^="myTable"]');

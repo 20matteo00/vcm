@@ -95,27 +95,23 @@
             $result_gruppi = $stmt_gruppi->get_result();
             $stmt_gruppi->close();
         }
-        ?>
+    ?>
         <!-- Form per la modifica -->
 
-        <form
-            action="index.php?page=azioni&name=modificasquadra&user=<?php echo $user; ?>&squadra=<?php echo urlencode($squadra); ?>"
-            method="post">
+        <form action="index.php?page=azioni&name=modificasquadra&user=<?php echo $user; ?>&squadra=<?php echo urlencode($squadra); ?>" method="post">
             <input type="hidden" name="user" value="<?php echo htmlspecialchars($user); ?>">
             <input type="hidden" name="squadra" value="<?php echo htmlspecialchars($squadra); ?>">
             <div class="row align-items-center justify-content-center">
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_name; ?>" class="form-label"><?php echo $VCM_name; ?></label>
-                        <input type="text" class="form-control" id="nome" name="nome"
-                            value="<?php echo htmlspecialchars($nome); ?>" required>
+                        <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_strength; ?>" class="form-label"><?php echo $VCM_strength; ?></label>
-                        <input type="number" class="form-control" id="forza" name="forza"
-                            value="<?php echo htmlspecialchars($forza); ?>" required>
+                        <input type="number" class="form-control" id="forza" name="forza" value="<?php echo htmlspecialchars($forza); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2 text-center">
@@ -123,9 +119,9 @@
                         <label for="gruppo" class="form-label">Gruppo</label>
                         <select class="form-control" id="gruppo" name="gruppo" required>
                             <?php
-                            while ($row = $result_gruppi->fetch_assoc()):
+                            while ($row = $result_gruppi->fetch_assoc()) :
                                 $selected = ($row['nome'] === $gruppo) ? 'selected' : '';
-                                ?>
+                            ?>
                                 <option value="<?php echo htmlspecialchars($row['nome']); ?>" <?php echo $selected; ?>>
                                     <?php echo htmlspecialchars($row['nome']); ?>
                                 </option>
@@ -136,24 +132,21 @@
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_color1; ?>" class="form-label"><?php echo $VCM_color1; ?></label>
-                        <input type="color" class="form-control" id="colore_primario" name="colore_primario"
-                            value="<?php echo htmlspecialchars($colore_primario); ?>" required>
+                        <input type="color" class="form-control" id="colore_primario" name="colore_primario" value="<?php echo htmlspecialchars($colore_primario); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_color2; ?>" class="form-label"><?php echo $VCM_color2; ?></label>
-                        <input type="color" class="form-control" id="colore_secondario" name="colore_secondario"
-                            value="<?php echo htmlspecialchars($colore_secondario); ?>" required>
+                        <input type="color" class="form-control" id="colore_secondario" name="colore_secondario" value="<?php echo htmlspecialchars($colore_secondario); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <button type="submit" class="btn btn-success w-100"
-                        name="submit_modifica"><?php echo $VCM_save; ?></button>
+                    <button type="submit" class="btn btn-success w-100" name="submit_modifica"><?php echo $VCM_save; ?></button>
                 </div>
             </div>
         </form>
-        <?php
+    <?php
     }
 
     if (isset($_GET['name']) && isset($_GET['gruppo'])) {
@@ -218,43 +211,37 @@
             // Chiusura dello statement preparato
             $stmt_select->close();
         }
-        ?>
+    ?>
 
         <!-- Form per la modifica -->
-        <form
-            action="index.php?page=azioni&name=modificagruppo&user=<?php echo $user; ?>&gruppo=<?php echo urlencode($gruppo); ?>"
-            method="post">
+        <form action="index.php?page=azioni&name=modificagruppo&user=<?php echo $user; ?>&gruppo=<?php echo urlencode($gruppo); ?>" method="post">
             <input type="hidden" name="user" value="<?php echo htmlspecialchars($user); ?>">
             <input type="hidden" name="gruppo" value="<?php echo htmlspecialchars($gruppo); ?>">
             <div class="row align-items-center justify-content-center">
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_name; ?>" class="form-label"><?php echo $VCM_name; ?></label>
-                        <input type="text" class="form-control" id="nome_gruppo" name="nome_gruppo"
-                            value="<?php echo htmlspecialchars($nome_gruppo); ?>" required>
+                        <input type="text" class="form-control" id="nome_gruppo" name="nome_gruppo" value="<?php echo htmlspecialchars($nome_gruppo); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_color1; ?>" class="form-label"><?php echo $VCM_color1; ?></label>
-                        <input type="color" class="form-control" id="colore_primario" name="colore_primario"
-                            value="<?php echo htmlspecialchars($colore_primario); ?>" required>
+                        <input type="color" class="form-control" id="colore_primario" name="colore_primario" value="<?php echo htmlspecialchars($colore_primario); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2 text-center">
                     <div class="mb-3">
                         <label for="<?php echo $VCM_color2; ?>" class="form-label"><?php echo $VCM_color2; ?></label>
-                        <input type="color" class="form-control" id="colore_secondario" name="colore_secondario"
-                            value="<?php echo htmlspecialchars($colore_secondario); ?>" required>
+                        <input type="color" class="form-control" id="colore_secondario" name="colore_secondario" value="<?php echo htmlspecialchars($colore_secondario); ?>" required>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <button type="submit" class="btn btn-success w-100"
-                        name="submit_modifica"><?php echo $VCM_save; ?></button>
+                    <button type="submit" class="btn btn-success w-100" name="submit_modifica"><?php echo $VCM_save; ?></button>
                 </div>
             </div>
-
-            <?php
+        </form>
+        <?php
 
     }
 
@@ -362,6 +349,39 @@
         }
     }
 
+    if (isset($_GET['azione']) && isset($_GET['giornata']) && isset($_GET['squadra1']) && isset($_GET['squadra2']) && isset($_GET['gol1']) && isset($_GET['gol2']) && isset($_GET['tabpar']) && isset($_GET['tabstat']) && isset($_GET['name']) && isset($_GET['mod'])) {
+        $azione = $_GET['azione'];
+        $giornata = $_GET['giornata'];
+        $squadra1 = $_GET['squadra1'];
+        $squadra2 = $_GET['squadra2'];
+        $gol1 = $_GET['gol1'];
+        $gol2 = $_GET['gol2'];
+        $tablepartite = $_GET['tabpar'];
+        $tablestatistiche = $_GET['tabstat'];
+        $nome = $_GET['name'];
+        $mod = $_GET['mod'];
+
+        if ($azione == "salva") {
+            $sql = "INSERT INTO $tablepartite (utente, nome, squadra1, squadra2, gol1, gol2, giornata) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE gol1 = VALUES(gol1), gol2 = VALUES(gol2)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssiii", $user, $nome, $squadra1, $squadra2, $gol1, $gol2, $giornata);
+            if ($stmt->execute()) {
+                header("Location: index.php?page=visualizza&name=" . $nome . "&mod=".$mod."&tabpar=" . $tablepartite . "&tabstat=" . $tablestatistiche . "#giornata" . $giornata);
+                
+                exit();
+            }
+        } elseif ($azione == "cancella"){
+            $sql = "DELETE FROM $tablepartite WHERE utente = ? AND nome = ? AND squadra1 = ? AND squadra2 = ? AND giornata = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssi", $user, $nome, $squadra1, $squadra2, $giornata);
+            if ($stmt->execute()) {
+                header("Location: index.php?page=visualizza&name=" . $nome . "&mod=".$mod."&tabpar=" . $tablepartite . "&tabstat=" . $tablestatistiche . "#giornata" . $giornata);
+                exit();
+            }
+        }
+    }
+
     if (isset($_GET['lang'])) {
         $lang = $_GET['lang'];
         $url = $_GET['url'];
@@ -374,7 +394,7 @@
         header("Location: $url");
         exit();
     }
-    ?>
+        ?>
 
 
 
