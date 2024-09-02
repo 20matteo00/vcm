@@ -83,13 +83,14 @@ if (isset($_GET['name']) && isset($_GET['mod'])) {
 ?>
 <script>
 function invioPartita(azione, giornata, squadra1, squadra2) {
+
     const form = document.createElement('form');
     // Ottieni i valori degli input direttamente dal DOM
-    const gol1 = document.getElementById('gol1_' + squadra1).value;
-    const gol2 = document.getElementById('gol2_' + squadra2).value;
+
+    const gol1 = document.getElementById(giornata + 'gol1' + squadra1).value;
+    const gol2 = document.getElementById(giornata + 'gol2' + squadra2).value;
     form.method = 'GET';
     form.action = 'index.php';
-
     const inputs = [
         { name: 'page', value: 'azioni' },
         { name: 'azione', value: azione },
@@ -159,8 +160,8 @@ function invioPartita(azione, giornata, squadra1, squadra2) {
                             $stmt3->close();
 
                             $gol = isset($row3['gol1']) && isset($row3['gol2']) ?
-                                "<input type='number' id='gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' value=" . $row3['gol1'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . " > - <input type='number' id='gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' value=" . $row3['gol2'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">" :
-                                "<input type='number' id='gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' id='gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
+                                "<input type='number' id='" . ($round + 1) . "gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' value=" . $row3['gol1'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . " > - <input type='number' id='" . ($round + 1) . "gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' value=" . $row3['gol2'] . " style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">" :
+                                "<input type='number' id='" . ($round + 1) . "gol1" . $match[0] . "' name='gol1" . $match[0] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . "> - <input type='number' id='" . ($round + 1) . "gol2" . $match[1] . "' name='gol2" . $match[1] . "' min='0' style='-moz-appearance: textfield; margin: 0; width: 25px;' " . $readonly . ">";
                             echo "<input type ='hidden' name='round' value='" . ($round + 1) . "'>";
                             echo "<input type='hidden' name='scheduler' value='" . htmlspecialchars(json_encode($scheduler[$round])) . "'>";
                             echo "<div class='match py-1 d-flex justify-content-between align-items-center'>";
