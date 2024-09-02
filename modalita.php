@@ -50,7 +50,7 @@ if (isset($_GET['mod'])) {
                 <h3>' . $VCM_choose . ' ' . $numeroPartecipanti . ' ' . $VCM_players . '</h3>';
 
         // Ottenere l'elenco delle squadre dal database
-        $sql = "SELECT * FROM squadre WHERE utente = ?";
+        $sql = "SELECT * FROM squadre WHERE utente = ? ORDER BY gruppo ASC, forza DESC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $user);
         $stmt->execute();
@@ -60,10 +60,11 @@ if (isset($_GET['mod'])) {
             $i = 0;
             while ($row = $result->fetch_assoc()) {
                 $nomeSquadra = $row['nome'];
+                $nomeGruppo = $row['gruppo'];
                 $i++;
                 echo "<div class='form-check border'>
                     <input class='form-check-input player-checkbox' type='checkbox' id='squadra$i' name='giocatori_selezionati[]' value='$nomeSquadra' onclick='limitCheckboxes($numeroPartecipanti)'>
-                    <label class='form-check-label partecipants' for='squadra$i'>$nomeSquadra</label>
+                    <label class='form-check-label partecipants' for='squadra$i'>$nomeSquadra - $nomeGruppo</label>
                   </div>";
             }
         } else {
