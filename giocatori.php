@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 
 // Recupera le squadre dall'utente corrente
 $user = $_SESSION['username'];
-$query_squadre = "SELECT * FROM squadre WHERE utente = ? ORDER BY forza DESC";
+$query_squadre = "SELECT * FROM squadre WHERE utente = ? ORDER BY gruppo ASC, forza DESC, nome ASC";
 $stmt_squadre = $conn->prepare($query_squadre);
 if ($stmt_squadre === false) {
     $error_message = $VCM_error3 . $conn->error;
