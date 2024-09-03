@@ -50,7 +50,7 @@ if (isset($_GET['mod'])) {
                 <h3>' . $VCM_choose . ' ' . $numeroPartecipanti . ' ' . $VCM_players . '</h3>';
 
         // Ottenere l'elenco delle squadre dal database
-        $sql = "SELECT * FROM squadre WHERE utente = ? ORDER BY gruppo ASC, forza DESC";
+        $sql = "SELECT * FROM squadre WHERE utente = ? ORDER BY gruppo ASC, forza DESC, nome ASC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $user);
         $stmt->execute();
