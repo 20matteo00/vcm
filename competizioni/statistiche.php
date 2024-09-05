@@ -502,7 +502,7 @@ $stmt->close();
                                     <td>
                                         <?php
                                         foreach ($infomaxgol as $partita) {
-                                            echo htmlspecialchars($maxgol) . ", " . htmlspecialchars($partita['squadra1']) . " " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
+                                            echo htmlspecialchars($maxgol) . ", " . htmlspecialchars($partita['squadra1']) . " - " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
                                         }
                                         ?>
                                     </td>
@@ -512,7 +512,7 @@ $stmt->close();
                                     <td>
                                         <?php
                                         foreach ($infogapgol as $partita) {
-                                            echo htmlspecialchars($gapgol) . ", " . htmlspecialchars($partita['squadra1']) . " " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
+                                            echo htmlspecialchars($gapgol) . ", " . htmlspecialchars($partita['squadra1']) . " - " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
                                         }
                                         ?>
                                     </td>
@@ -869,7 +869,7 @@ $stmt->close();
                                         <td>
                                             <?php
                                             foreach ($infomaxwin as $partita) {
-                                                echo htmlspecialchars($maxwin) . ", " . htmlspecialchars($partita['squadra1']) . " " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
+                                                echo htmlspecialchars($maxwin) . ", " . htmlspecialchars($partita['squadra1']) . " - " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
                                             }
                                             ?>
                                         </td>
@@ -879,7 +879,7 @@ $stmt->close();
                                         <td>
                                             <?php
                                             foreach ($infomaxlose as $partita) {
-                                                echo htmlspecialchars($maxlose) . ", " . htmlspecialchars($partita['squadra1']) . " " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
+                                                echo htmlspecialchars($maxlose) . ", " . htmlspecialchars($partita['squadra1']) . " - " . htmlspecialchars($partita['squadra2']) . " " . htmlspecialchars($partita['gol1']) . " - " . htmlspecialchars($partita['gol2']) . " (" . htmlspecialchars($partita['giornata']) . "°)<br>";
                                             }
                                             ?>
                                         </td>
